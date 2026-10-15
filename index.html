@@ -9,7 +9,7 @@
 // Sostituisce google.script.run quando il form gira fuori da Apps Script
 // (GitHub Pages ecc.). Le chiamate vanno all'API doPost del progetto.
 (function () {
-  var API = 'https://script.google.com/macros/s/AKfycbxdAMht_X410IZL4f0ZcVZa4Xo6-wBw7K90lw4gTfrNXh9G_rOkU4SFyDYkcQeDzf7j/exec';
+  var API = 'https://script.google.com/macros/s/AKfycbzacyh8bspCAGjym4DzgkCaYyFPTpFWOOKExbyXaI0Kg5sE59tonBJ8EBumhs6xfg0v/exec';
 
   function chiama(fn, args) {
     return fetch(API, {
@@ -253,6 +253,41 @@
     .titolo-form { font-size: 18px; }
     .chips { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
   }
+
+  /* ---------------- modale "posti esauriti" ---------------- */
+
+  body.modale-aperta { overflow: hidden; }
+
+  .modale-sfondo {
+    position: fixed; inset: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 18px;
+    background: rgba(23, 22, 22, .72);
+  }
+  .modale-sfondo[hidden] { display: none; }
+
+  .modale {
+    width: 100%; max-width: 460px; max-height: calc(100vh - 36px); overflow-y: auto;
+    background: var(--bianco); color: var(--nero);
+    border: 2px solid var(--nero); border-radius: var(--r);
+    padding: 26px 22px 22px; text-align: center;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .35);
+  }
+  .modale .logo { width: 120px; margin-bottom: 18px; }
+  .modale h2 {
+    margin: 0 0 14px; padding: 12px 16px;
+    background: var(--verde); color: var(--bianco); border-radius: var(--r);
+    font-size: 24px; line-height: 1.12; font-weight: 800;
+    text-transform: uppercase; letter-spacing: -.005em;
+  }
+  .modale p { margin: 0 0 6px; font-size: 16px; line-height: 1.5; text-align: left; }
+  .modale p b { font-weight: 800; color: var(--rosso); }
+  .modale button.go { margin-top: 20px; }
+
+  @media (max-width: 400px) {
+    .modale { padding: 22px 16px 18px; }
+    .modale h2 { font-size: 21px; }
+  }
 </style>
 </head>
 <body>
@@ -370,6 +405,52 @@
   </div>
 
 </div>
+
+<!-- Modale mostrata a ogni apertura: va chiusa col pulsante prima di compilare -->
+<div class="modale-sfondo" id="modale">
+  <div class="modale" role="dialog" aria-modal="true"
+       aria-labelledby="modale-titolo" aria-describedby="modale-testo">
+    <img class="logo" id="modale-logo" alt="Comedian per Gaza">
+    <h2 id="modale-titolo">Grazie mille!</h2>
+    <p id="modale-testo">
+      Al momento abbiamo già raggiunto un numero sufficiente di comici per riempire
+      tutta la giornata, ma potete comunque lasciare il vostro nominativo e vi metteremo
+      in scaletta come <b>“riserve”</b> nel caso si dovessero liberare posti.
+    </p>
+    <button type="button" class="go" id="modale-ok">Ok, cheppalle!!</button>
+  </div>
+</div>
+<script>
+(function () {
+  var sfondo = document.getElementById('modale');
+  var pagina = document.querySelector('.wrap');
+  var ok = document.getElementById('modale-ok');
+
+  // stesso logo della testata, senza duplicare l'immagine nel file
+  var logo = document.querySelector('header .logo');
+  if (logo) document.getElementById('modale-logo').src = logo.src;
+
+  // finche' la modale e' aperta il form non e' raggiungibile, nemmeno col tab
+  document.body.classList.add('modale-aperta');
+  pagina.setAttribute('inert', '');
+  pagina.setAttribute('aria-hidden', 'true');
+  ok.focus();
+
+  ok.addEventListener('click', function () {
+    sfondo.hidden = true;
+    document.body.classList.remove('modale-aperta');
+    pagina.removeAttribute('inert');
+    pagina.removeAttribute('aria-hidden');
+    var nome = document.getElementById('nome');
+    if (nome) nome.focus({ preventScroll: true });
+  });
+
+  // il tab resta sul pulsante (browser senza supporto a inert)
+  sfondo.addEventListener('keydown', function (e) {
+    if (e.key === 'Tab') { e.preventDefault(); ok.focus(); }
+  });
+})();
+</script>
 
 <script>
 (function () {
