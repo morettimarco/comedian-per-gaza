@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comedian per Gaza 2026 — Le città</title>
+<meta name="description" content="Tutte le città di Comedian per Gaza 2026: date, locali, form per i comici e contatti per prenotare.">
+<style>
+  /* Stessa palette e stessi componenti del form (index.html) */
+  :root {
+    --rosso: #E41B1F;
+    --verde: #159246;
+    --verde-ui: #138741;
+    --nero: #171616;
+    --panna: #F2F2F1;
+    --bianco: #FFFFFF;
+    --grigio: #6E6864;
+    --bordo: #DCD8D5;
+    --r: 14px;
+    --font: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bianco);
+    color: var(--nero);
+    font: 16px/1.55 var(--font);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 28px 18px 60px; }
+
+  /* ---------------- intestazione ---------------- */
+
+  header { text-align: center; margin-bottom: 26px; }
+
+  .logo { width: 150px; height: auto; display: block; margin: 0 auto 22px; }
+
+  h1 {
+    margin: 0 0 18px; color: var(--nero);
+    font-size: 21px; line-height: 1.2; font-weight: 800; letter-spacing: .01em;
+  }
+
+  .claim {
+    background: var(--verde);
+    color: var(--bianco);
+    border-radius: var(--r);
+    padding: 16px 20px;
+    font-size: 25px; line-height: 1.12;
+    font-weight: 800; text-transform: uppercase; letter-spacing: -.005em;
+  }
+
+  .intro {
+    color: var(--nero); font-size: 15.5px; text-align: left;
+    margin: 22px 0 0; padding: 0 2px;
+  }
+  .intro b { font-weight: 700; }
+
+  /* ---------------- salto rapido alle città ---------------- */
+
+  nav.salta {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin: 0 0 26px;
+  }
+  nav.salta a {
+    display: inline-block; padding: 8px 16px; border-radius: 999px;
+    border: 2px solid var(--nero); background: var(--bianco); color: var(--nero);
+    font-size: 14px; font-weight: 700; text-decoration: none;
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  nav.salta a:hover { background: var(--nero); color: var(--bianco); }
+
+  /* ---------------- scheda città ---------------- */
+
+  .citta {
+    border: 2px solid var(--nero); border-radius: var(--r);
+    background: var(--bianco); margin: 0 0 18px; padding: 20px 16px 18px;
+    scroll-margin-top: 16px;
+  }
+
+  .citta h2 {
+    margin: 0 0 12px;
+    font-size: 30px; line-height: 1; font-weight: 800;
+    text-transform: uppercase; letter-spacing: -.01em;
+  }
+
+  .quando {
+    background: var(--rosso);
+    color: var(--bianco);
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 16px; line-height: 1.35;
+  }
+  .quando .data { font-weight: 800; text-transform: uppercase; letter-spacing: .01em; font-size: 17px; }
+  .quando .orario { font-weight: 700; }
+  .quando.tbd { background: var(--panna); color: var(--grigio); border: 2px dashed var(--bordo); }
+
+  .dove { margin: 16px 0 0; }
+  .dove .locale { font-size: 19px; font-weight: 800; line-height: 1.25; }
+  .dove .locale a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+  .dove .indirizzo { display: inline-block; margin-top: 3px; color: var(--grigio); font-size: 15px; }
+  a.indirizzo { text-decoration: underline; text-underline-offset: 3px; }
+  a.indirizzo:hover { color: var(--rosso); }
+  .dove .tbd { color: var(--grigio); font-style: italic; }
+
+  .etichetta {
+    display: block; margin: 16px 0 6px;
+    font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--grigio);
+  }
+
+  /* contatti per prenotare e organizzatore */
+  .riga { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
+  .contatto {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 10px;
+    background: var(--panna); border: 2px solid var(--bordo);
+    color: var(--nero); font-size: 15px; font-weight: 700; text-decoration: none;
+    word-break: break-word;
+  }
+  a.contatto:hover { border-color: var(--nero); background: var(--bianco); }
+  .vuoto { color: var(--grigio); font-size: 14.5px; }
+
+  .org { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+  .org .nome { font-weight: 700; }
+  a.ig {
+    flex: none;
+    display: inline-grid; place-items: center;
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--nero); color: var(--bianco);
+  }
+  a.ig:hover { background: var(--rosso); }
+  a.ig svg { width: 22px; height: 22px; display: block; }
+
+  /* call to action */
+  .azioni { display: grid; gap: 10px; margin-top: 20px; }
+  .btn {
+    display: block; width: 100%; padding: 15px; text-align: center;
+    font-size: 16.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
+    font-family: inherit; text-decoration: none;
+    border-radius: var(--r); border: 0; cursor: pointer;
+  }
+  .btn.rosso { color: var(--bianco); background: var(--rosso); }
+  .btn.rosso:hover { background: #C81418; }
+  .btn.spento {
+    color: var(--grigio); background: var(--panna); border: 2px dashed var(--bordo);
+    cursor: default; font-size: 14.5px;
+  }
+
+  a:focus-visible { outline: 3px solid var(--nero); outline-offset: 2px; }
+
+  .skel { color: var(--grigio); font-size: 14px; padding: 10px 0; text-align: center; }
+
+  .banner {
+    padding: 14px 16px; border-radius: 10px; margin-bottom: 18px;
+    font-size: 14.5px; font-weight: 600;
+    background: #FDF1F1; border: 2px solid var(--rosso); color: #A51417;
+  }
+
+  footer {
+    margin-top: 30px; text-align: center; color: var(--grigio); font-size: 12.5px;
+    border-top: 2px solid var(--panna); padding-top: 18px;
+  }
+  footer a { color: var(--rosso); font-weight: 700; }
+
+  @media (max-width: 400px) {
+    .claim { font-size: 21px; padding: 14px 16px; }
+    h1 { font-size: 18px; }
+    .citta h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img class="logo" src="logo.png" alt="Comedian per Gaza" width="150" height="184">
+    <h1>LE CITTÀ DI COMEDIAN PER GAZA 2026</h1>
+    <div class="claim">Stand up comedy<br>in tutta Italia</div>
+    <p class="intro">
+      Comici che salgono sul palco a titolo gratuito, in tante città nello stesso
+      periodo: <b>il ricavato va in favore del popolo palestinese</b>.
+      <br><br>
+      Trova la tua città: puoi <b>prenotare un posto</b> per assistere
+      o <b>candidarti come comico</b>.
+    </p>
+  </header>
+
+  <nav class="salta" id="salta" aria-label="Vai alla città"></nav>
+
+  <main id="elenco"><div class="skel">Carico le città…</div></main>
+
+  <footer>Comedian per Gaza 2026 · <a href="index.html">Form comici Milano</a></footer>
+</div>
+
+<script>
+(function () {
+  // Stessa API Apps Script del form: vedi apps-script/Citta.gs per getCitta()
+  var API = 'https://script.google.com/macros/s/AKfycbzacyh8bspCAGjym4DzgkCaYyFPTpFWOOKExbyXaI0Kg5sE59tonBJ8EBumhs6xfg0v/exec';
+  var ANNO = 2026;
+
+  // Form noti per città, usati se la colonna "Link Form" nel foglio e' vuota
+  var FORM_DEFAULT = { 'milano': 'index.html' };
+
+  // Copia del foglio "Città" al 30/10/2026: si usa solo se l'API non risponde,
+  // cosi' la pagina non resta vuota. I dati veri arrivano sempre dal foglio.
+  var RISERVA = [
+    { citta: 'Milano', data: '22/11/2026 11:00', locale: 'CIQ', indirizzo: 'Via Fabio Massimo, 19, 20139 Milano MI', igLocale: '@ciq_milano', sito: 'https://www.ciqmilano.it/' },
+    { citta: 'Genova', data: '22/11', referente: 'Li Evito Male', igReferente: '@li_evito_male', locale: 'Quasi Casa', indirizzo: 'Vico Doria, 1, 16123 Genova GE', igLocale: '@quasi_casa_' },
+    { citta: 'Parma', data: '22/11' },
+    { citta: 'Roma', data: '29/11', referente: 'Lara Korach', igReferente: '@larakorach.33', locale: 'C.S. BRANCALEONE', indirizzo: 'Via Levanna, 11, 00141 Roma RM', igLocale: '@brancaleoneroma' },
+    { citta: 'Bologna', data: '22/11' },
+    { citta: 'Palermo', data: '22/11' },
+    { citta: 'Ancona', data: '22/11', referente: 'Nicola De Giorgio', igReferente: '@degiorgionicola', locale: 'Accademia56' }
+  ];
+
+  var GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+  var MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio',
+              'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+
+  var IG_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/>' +
+    '<circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>';
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function el(tag, cls, testo) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (testo != null) e.textContent = testo;
+    return e;
+  }
+
+  function link(href, cls, testo) {
+    var a = el('a', cls, testo);
+    a.href = href;
+    if (/^https?:/i.test(href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+    return a;
+  }
+
+  function slug(s) {
+    return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function soloHttp(u) {
+    u = String(u || '').trim();
+    if (!u) return '';
+    if (!/^[a-z]+:/i.test(u) && /^[\w-]+(\.[\w-]+)+/.test(u)) u = 'https://' + u;
+    return /^https?:\/\//i.test(u) ? u : '';
+  }
+
+  function handleIg(s) {
+    var m = String(s || '').trim().match(/(?:instagram\.com\/)?@?([A-Za-z0-9._]{1,30})\/?$/);
+    return m ? m[1] : '';
+  }
+
+  /** "22/11", "22/11/2026", "22/11/2026 11:00" -> { quando: Date, ora: "11.00" } */
+  function leggiData(s) {
+    var m = String(s || '').match(/(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?(?:\s+(\d{1,2})[:.](\d{2}))?/);
+    if (!m) return null;
+    var anno = m[3] ? (m[3].length === 2 ? 2000 + +m[3] : +m[3]) : ANNO;
+    var d = new Date(anno, +m[2] - 1, +m[1]);
+    if (d.getMonth() !== +m[2] - 1) return null;
+    return { quando: d, ora: m[4] ? (+m[4]) + '.' + m[5] : '' };
+  }
+
+  /** Contatto libero dal foglio -> link adatto (sito, mail, telefono, Instagram). */
+  function contatto(s) {
+    s = s.trim();
+    if (/^https?:\/\//i.test(s) || /^www\./i.test(s)) {
+      var u = soloHttp(s);
+      return u ? link(u, 'contatto', s.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '')) : el('span', 'contatto', s);
+    }
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) return link('mailto:' + s, 'contatto', '✉ ' + s);
+    if (/^\+?[\d\s().-]{6,}$/.test(s)) return link('tel:' + s.replace(/[^\d+]/g, ''), 'contatto', '☎ ' + s);
+    if (/^@[A-Za-z0-9._]+$/.test(s)) return link('https://instagram.com/' + s.slice(1), 'contatto', s);
+    return el('span', 'contatto', s);
+  }
+
+  function scheda(c) {
+    var id = slug(c.citta);
+    var box = el('section', 'citta');
+    box.id = id;
+
+    box.appendChild(el('h2', null, c.citta));
+
+    // data
+    var d = leggiData(c.data);
+    var quando = el('div', 'quando' + (d ? '' : ' tbd'));
+    if (d) {
+      quando.appendChild(el('div', 'data',
+        GIORNI[d.quando.getDay()] + ' ' + d.quando.getDate() + ' ' + MESI[d.quando.getMonth()] + ' ' + d.quando.getFullYear()));
+      if (d.ora) quando.appendChild(el('div', 'orario', 'dalle ' + d.ora));
+    } else {
+      quando.appendChild(el('div', 'data', c.data || 'Data da definire'));
+    }
+    box.appendChild(quando);
+
+    // luogo
+    var dove = el('div', 'dove');
+    if (c.locale) {
+      var nome = el('div', 'locale');
+      var sito = soloHttp(c.sito);
+      nome.appendChild(sito ? link(sito, null, c.locale) : document.createTextNode(c.locale));
+      dove.appendChild(nome);
+      if (c.indirizzo) {
+        dove.appendChild(link('https://www.google.com/maps/search/?api=1&query=' +
+          encodeURIComponent(c.locale + ', ' + c.indirizzo), 'indirizzo', '📍 ' + c.indirizzo));
+      } else {
+        dove.appendChild(el('div', 'indirizzo tbd', 'Indirizzo in arrivo'));
+      }
+    } else {
+      dove.appendChild(el('div', 'locale tbd', 'Location da definire'));
+    }
+    box.appendChild(dove);
+
+    // prenotazioni: colonna "Contatti Prenotazione", altrimenti sito / IG del locale
+    box.appendChild(el('span', 'etichetta', 'Per prenotare'));
+    var pren = el('div', 'riga');
+    var voci = String(c.contatti || '').split(/\n|;|,(?=\s*[@+\dhw])/).map(function (x) { return x.trim(); }).filter(Boolean);
+    if (!voci.length) {
+      if (soloHttp(c.sito)) voci.push(soloHttp(c.sito));
+      if (handleIg(c.igLocale)) voci.push('@' + handleIg(c.igLocale));
+    }
+    voci.forEach(function (v) { pren.appendChild(contatto(v)); });
+    if (!voci.length) pren.appendChild(el('span', 'vuoto', 'Contatti in arrivo'));
+    box.appendChild(pren);
+
+    // organizzatore
+    var ig = handleIg(c.igReferente);
+    if (c.referente || ig) {
+      box.appendChild(el('span', 'etichetta', 'Organizza'));
+      var org = el('div', 'org');
+      if (ig) {
+        var a = link('https://instagram.com/' + ig, 'ig');
+        a.innerHTML = IG_SVG;
+        a.setAttribute('aria-label', 'Instagram di ' + (c.referente || '@' + ig));
+        a.title = '@' + ig;
+        org.appendChild(a);
+      }
+      org.appendChild(el('span', 'nome', c.referente || '@' + ig));
+      box.appendChild(org);
+    }
+
+    // form comici
+    var azioni = el('div', 'azioni');
+    var form = soloHttp(c.form) || FORM_DEFAULT[slug(c.citta)] || '';
+    if (form) azioni.appendChild(link(form, 'btn rosso', 'Sei un comico? Candidati'));
+    else azioni.appendChild(el('span', 'btn spento', 'Form per i comici in arrivo'));
+    box.appendChild(azioni);
+
+    return box;
+  }
+
+  function disegna(lista) {
+    lista = lista.filter(function (c) { return c && String(c.citta || '').trim(); });
+
+    // ordine: per data, poi alfabetico; senza data in fondo
+    lista.sort(function (a, b) {
+      var da = leggiData(a.data), db = leggiData(b.data);
+      var ta = da ? da.quando.getTime() : Infinity, tb = db ? db.quando.getTime() : Infinity;
+      return ta - tb || a.citta.localeCompare(b.citta, 'it');
+    });
+
+    var main = $('elenco'), nav = $('salta');
+    main.innerHTML = '';
+    nav.innerHTML = '';
+    if (!lista.length) {
+      main.appendChild(el('div', 'banner', 'Nessuna città ancora in programma. Torna a trovarci presto!'));
+      return;
+    }
+    lista.forEach(function (c) {
+      main.appendChild(scheda(c));
+      nav.appendChild(link('#' + slug(c.citta), null, c.citta));
+    });
+  }
+
+  fetch(API, {
+    method: 'POST',
+    // text/plain evita il preflight CORS, che Apps Script non gestisce
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ fn: 'getCitta', args: [] })
+  })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (j) {
+      if (j.errore) throw new Error(j.errore);
+      if (!Array.isArray(j.risultato)) throw new Error('Risposta inattesa');
+      disegna(j.risultato);
+    })
+    .catch(function (e) {
+      console.warn('getCitta non disponibile, uso la copia locale:', e);
+      disegna(RISERVA);
+    });
+})();
+</script>
+</body>
+</html>
