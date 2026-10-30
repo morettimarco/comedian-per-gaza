@@ -184,8 +184,9 @@
     text-transform: uppercase; letter-spacing: .03em; text-decoration: none;
     border-radius: var(--r); border: 0; cursor: pointer;
   }
-  .btn.rosso { color: var(--bianco); background: var(--rosso); }
-  .btn.rosso:hover { background: #C81418; }
+  .btn.verde { color: var(--bianco); background: var(--verde); }
+  .btn.verde:hover { background: #0F7A39; }
+  .btn.completo { color: var(--bianco); background: var(--rosso); cursor: default; }
   .btn.spento {
     color: var(--grigio); background: var(--panna); border: 2px dashed var(--bordo);
     cursor: default; font-family: var(--font); font-size: 14px; font-weight: 800; padding: 14px;
@@ -431,8 +432,10 @@
 
     // form comici
     var azioni = el('div', 'azioni');
+    // "Completo" nella colonna Link Form: niente candidature per quella citta'
     var form = soloHttp(c.form) || FORM_DEFAULT[slug(c.citta)] || '';
-    if (form) azioni.appendChild(link(form, 'btn rosso', 'Sei un comico? Candidati'));
+    if (/^\s*complet[oa]\s*$/i.test(c.form || '')) azioni.appendChild(el('span', 'btn completo', 'Line up complete'));
+    else if (form) azioni.appendChild(link(form, 'btn verde', 'Sei un comico? Candidati'));
     else azioni.appendChild(el('span', 'btn spento', 'Form per i comici in arrivo'));
     box.appendChild(azioni);
 
