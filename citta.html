@@ -5,8 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Comedian per Gaza 2026 — Le città</title>
 <meta name="description" content="Tutte le città di Comedian per Gaza 2026: date, locali, form per i comici e contatti per prenotare.">
+<!--
+  Zuume Rough Bold (font della locandina) e' su Adobe Fonts, non e' libero.
+  Per usarlo: crea un Web Project su fonts.adobe.com con Zuume Rough Bold,
+  aggiungi il dominio del sito e sostituisci KITID qui sotto togliendo il commento.
+  Senza kit la pagina usa Anton con un effetto "consumato" simile.
+-->
+<!-- <link rel="stylesheet" href="https://use.typekit.net/KITID.css"> -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;700;800&display=swap">
 <style>
-  /* Stessa palette e stessi componenti del form (index.html) */
+  /* Palette del form (index.html), tipografia della locandina */
   :root {
     --rosso: #E41B1F;
     --verde: #159246;
@@ -17,8 +27,20 @@
     --grigio: #6E6864;
     --bordo: #DCD8D5;
     --r: 14px;
-    --font: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --titolo: "zuume-rough", "Anton", Impact, "Arial Narrow", sans-serif;
   }
+
+  /* Effetto "inchiostro consumato" per il fallback Anton: si spegne
+     da solo (classe .zuume su <html>) se il kit Adobe e' caricato */
+  .rough {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -35 27.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -35 27.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  }
+  .zuume .rough { -webkit-mask-image: none; mask-image: none; }
+
+  /* fasce verdi come sulla locandina */
+  .fascia { height: 22px; background: var(--verde); }
 
   * { box-sizing: border-box; }
 
@@ -41,17 +63,22 @@
   .logo { width: 150px; height: auto; display: block; margin: 0 auto 22px; }
 
   h1 {
-    margin: 0 0 18px; color: var(--nero);
-    font-size: 21px; line-height: 1.2; font-weight: 800; letter-spacing: .01em;
+    margin: 0 0 4px; color: var(--rosso);
+    font-family: var(--titolo); font-weight: 700;
+    font-size: 64px; line-height: .95; text-transform: uppercase; letter-spacing: .005em;
+  }
+  .anno {
+    margin: 0 0 20px; color: var(--nero);
+    font-size: 15px; font-weight: 800; letter-spacing: .32em; text-transform: uppercase;
   }
 
   .claim {
     background: var(--verde);
     color: var(--bianco);
     border-radius: var(--r);
-    padding: 16px 20px;
-    font-size: 25px; line-height: 1.12;
-    font-weight: 800; text-transform: uppercase; letter-spacing: -.005em;
+    padding: 14px 20px 12px;
+    font-family: var(--titolo); font-weight: 700;
+    font-size: 32px; line-height: 1.05; text-transform: uppercase; letter-spacing: .01em;
   }
 
   .intro {
@@ -82,39 +109,52 @@
     scroll-margin-top: 16px;
   }
 
+  .citta { text-align: center; }
+
   .citta h2 {
-    margin: 0 0 12px;
-    font-size: 30px; line-height: 1; font-weight: 800;
-    text-transform: uppercase; letter-spacing: -.01em;
+    margin: 4px 0 6px; color: var(--rosso);
+    font-family: var(--titolo); font-weight: 700;
+    font-size: 76px; line-height: .9; text-transform: uppercase; letter-spacing: .005em;
+    overflow-wrap: anywhere;
   }
+  .citta h2.lungo { font-size: 50px; }
 
   .quando {
-    background: var(--rosso);
-    color: var(--bianco);
-    border-radius: 10px;
-    padding: 11px 16px;
-    font-size: 16px; line-height: 1.35;
+    color: var(--rosso);
+    font-family: var(--titolo); font-weight: 700;
+    font-size: 30px; line-height: 1.05; text-transform: uppercase; letter-spacing: .01em;
   }
-  .quando .data { font-weight: 800; text-transform: uppercase; letter-spacing: .01em; font-size: 17px; }
-  .quando .orario { font-weight: 700; }
-  .quando.tbd { background: var(--panna); color: var(--grigio); border: 2px dashed var(--bordo); }
+  .quando .giorno {
+    display: block; margin-bottom: 2px;
+    font-family: var(--font); font-size: 13px; font-weight: 800; letter-spacing: .28em; color: var(--nero);
+  }
+  .quando .orario { white-space: nowrap; }
+  .quando .orario::before { content: ""; display: inline-block; width: .5em; }
+  .quando.tbd { color: var(--grigio); font-size: 24px; }
 
-  .dove { margin: 16px 0 0; }
-  .dove .locale { font-size: 19px; font-weight: 800; line-height: 1.25; }
-  .dove .locale a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
-  .dove .indirizzo { display: inline-block; margin-top: 3px; color: var(--grigio); font-size: 15px; }
-  a.indirizzo { text-decoration: underline; text-underline-offset: 3px; }
-  a.indirizzo:hover { color: var(--rosso); }
-  .dove .tbd { color: var(--grigio); font-style: italic; }
+  .dove { margin: 20px 0 0; text-transform: uppercase; }
+  .dove .locale {
+    font-size: 23px; font-weight: 800; line-height: 1.15; letter-spacing: .005em; color: #222;
+  }
+  .dove .locale a { color: inherit; text-decoration: none; }
+  .dove .locale a:hover { color: var(--rosso); }
+  .dove .indirizzo {
+    display: inline-block; margin-top: 4px; color: #333;
+    font-size: 15px; font-weight: 400; letter-spacing: .02em;
+  }
+  a.indirizzo { text-decoration: underline; text-decoration-color: var(--bordo); text-underline-offset: 4px; }
+  a.indirizzo:hover { color: var(--rosso); text-decoration-color: currentColor; }
+  .dove .tbd { color: var(--grigio); }
+  .dove .locale.tbd { font-weight: 700; font-size: 18px; }
 
   .etichetta {
-    display: block; margin: 16px 0 6px;
+    display: block; margin: 20px 0 8px;
     font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .09em;
     color: var(--grigio);
   }
 
   /* contatti per prenotare e organizzatore */
-  .riga { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
+  .riga { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; justify-content: center; }
   .contatto {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 8px 14px; border-radius: 10px;
@@ -125,7 +165,7 @@
   a.contatto:hover { border-color: var(--nero); background: var(--bianco); }
   .vuoto { color: var(--grigio); font-size: 14.5px; }
 
-  .org { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+  .org { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; }
   .org .nome { font-weight: 700; }
   a.ig {
     flex: none;
@@ -139,17 +179,34 @@
   /* call to action */
   .azioni { display: grid; gap: 10px; margin-top: 20px; }
   .btn {
-    display: block; width: 100%; padding: 15px; text-align: center;
-    font-size: 16.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
-    font-family: inherit; text-decoration: none;
+    display: block; width: 100%; padding: 13px 15px 11px; text-align: center;
+    font-family: var(--titolo); font-size: 25px; font-weight: 700; line-height: 1.1;
+    text-transform: uppercase; letter-spacing: .03em; text-decoration: none;
     border-radius: var(--r); border: 0; cursor: pointer;
   }
   .btn.rosso { color: var(--bianco); background: var(--rosso); }
   .btn.rosso:hover { background: #C81418; }
   .btn.spento {
     color: var(--grigio); background: var(--panna); border: 2px dashed var(--bordo);
-    cursor: default; font-size: 14.5px;
+    cursor: default; font-family: var(--font); font-size: 14px; font-weight: 800; padding: 14px;
   }
+
+  /* ---------------- banda Soleterre (come in fondo alla locandina) ---------------- */
+
+  .soleterre {
+    display: grid; grid-template-columns: 1fr 150px; align-items: stretch;
+    border: 3px solid var(--nero); border-radius: var(--r); overflow: hidden;
+    margin: 30px 0 0; color: inherit; text-decoration: none;
+  }
+  .soleterre .testo {
+    background: #FF0A0A; color: var(--bianco);
+    padding: 14px 16px 12px;
+    font-family: var(--titolo); font-weight: 700;
+    font-size: 23px; line-height: 1.08; text-transform: uppercase; letter-spacing: .01em;
+  }
+  .soleterre .marchio { background: var(--bianco); display: grid; place-items: center; padding: 10px; }
+  .soleterre img { width: 100%; max-width: 130px; height: auto; display: block; }
+  .soleterre:hover .testo { background: #C81418; }
 
   a:focus-visible { outline: 3px solid var(--nero); outline-offset: 2px; }
 
@@ -161,6 +218,12 @@
     background: #FDF1F1; border: 2px solid var(--rosso); color: #A51417;
   }
 
+  .avviso {
+    margin: 0 0 18px; padding: 10px 14px; border-radius: 10px;
+    background: var(--panna); border: 2px dashed var(--bordo);
+    color: var(--grigio); font-size: 13.5px; text-align: center;
+  }
+
   footer {
     margin-top: 30px; text-align: center; color: var(--grigio); font-size: 12.5px;
     border-top: 2px solid var(--panna); padding-top: 18px;
@@ -168,22 +231,30 @@
   footer a { color: var(--rosso); font-weight: 700; }
 
   @media (max-width: 400px) {
-    .claim { font-size: 21px; padding: 14px 16px; }
-    h1 { font-size: 18px; }
-    .citta h2 { font-size: 26px; }
+    h1 { font-size: 50px; }
+    .claim { font-size: 27px; padding: 12px 16px 10px; }
+    .citta h2 { font-size: 62px; }
+    .citta h2.lungo { font-size: 40px; }
+    .quando { font-size: 25px; }
+    .dove .locale { font-size: 20px; }
+    .soleterre { grid-template-columns: 1fr 108px; }
+    .soleterre .testo { font-size: 19px; }
   }
 </style>
 </head>
 <body>
+<div class="fascia"></div>
 <div class="wrap">
 
   <header>
     <img class="logo" src="logo.png" alt="Comedian per Gaza" width="150" height="184">
-    <h1>LE CITTÀ DI COMEDIAN PER GAZA 2026</h1>
+    <h1 class="rough">Le città</h1>
+    <p class="anno">Comedian per Gaza · 2026</p>
     <div class="claim">Stand up comedy<br>in tutta Italia</div>
     <p class="intro">
       Comici che salgono sul palco a titolo gratuito, in tante città nello stesso
-      periodo: <b>il ricavato va in favore del popolo palestinese</b>.
+      periodo: <b>tutto il ricavato va alla Fondazione Soleterre</b> per l'aiuto
+      umanitario alla popolazione di Gaza.
       <br><br>
       Trova la tua città: puoi <b>prenotare un posto</b> per assistere
       o <b>candidarti come comico</b>.
@@ -194,8 +265,19 @@
 
   <main id="elenco"><div class="skel">Carico le città…</div></main>
 
+  <a class="soleterre" href="https://soleterre.org/" target="_blank" rel="noopener noreferrer"
+     aria-label="Fondazione Soleterre ETS — sito ufficiale">
+    <div class="testo">Tutto il ricavato sarà devoluto a Fondazione Soleterre ETS
+      per l'aiuto umanitario alla popolazione di Gaza</div>
+    <div class="marchio">
+      <img src="https://soleterre.org/wp-content/uploads/2024/01/Logo_ST_quadrato.png"
+           alt="Soleterre" width="130" height="130" loading="lazy">
+    </div>
+  </a>
+
   <footer>Comedian per Gaza 2026 · <a href="index.html">Form comici Milano</a></footer>
 </div>
+<div class="fascia"></div>
 
 <script>
 (function () {
@@ -219,9 +301,6 @@
   ];
 
   var GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
-  var MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio',
-              'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
-
   var IG_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">' +
     '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/>' +
     '<circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>';
@@ -287,17 +366,20 @@
     var box = el('section', 'citta');
     box.id = id;
 
-    box.appendChild(el('h2', null, c.citta));
+    // nomi lunghi ("Reggio Emilia", ...) su un rigo solo anche da telefono
+    box.appendChild(el('h2', 'rough' + (c.citta.length > 9 ? ' lungo' : ''), c.citta));
 
-    // data
+    // data, scritta come sulla locandina: 22-11-2026 ORE 19.30
     var d = leggiData(c.data);
     var quando = el('div', 'quando' + (d ? '' : ' tbd'));
     if (d) {
-      quando.appendChild(el('div', 'data',
-        GIORNI[d.quando.getDay()] + ' ' + d.quando.getDate() + ' ' + MESI[d.quando.getMonth()] + ' ' + d.quando.getFullYear()));
-      if (d.ora) quando.appendChild(el('div', 'orario', 'dalle ' + d.ora));
+      var due = function (n) { return (n < 10 ? '0' : '') + n; };
+      quando.appendChild(el('span', 'giorno', GIORNI[d.quando.getDay()]));
+      quando.appendChild(el('span', 'data',
+        due(d.quando.getDate()) + '-' + due(d.quando.getMonth() + 1) + '-' + d.quando.getFullYear()));
+      if (d.ora) quando.appendChild(el('span', 'orario', 'ore ' + d.ora));
     } else {
-      quando.appendChild(el('div', 'data', c.data || 'Data da definire'));
+      quando.appendChild(el('span', 'data', c.data || 'Data da definire'));
     }
     box.appendChild(quando);
 
@@ -380,6 +462,16 @@
     });
   }
 
+  // Se il kit Adobe ha caricato Zuume Rough tolgo l'effetto consumato del fallback.
+  // (document.fonts.check() non basta: da' true anche per un font mai dichiarato)
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      document.fonts.forEach(function (f) {
+        if (/zuume/i.test(f.family) && f.status === 'loaded') document.documentElement.classList.add('zuume');
+      });
+    });
+  }
+
   fetch(API, {
     method: 'POST',
     // text/plain evita il preflight CORS, che Apps Script non gestisce
@@ -395,6 +487,10 @@
     .catch(function (e) {
       console.warn('getCitta non disponibile, uso la copia locale:', e);
       disegna(RISERVA);
+      // Avviso visibile: senza, una copia vecchia sembra il foglio aggiornato
+      var avviso = el('div', 'avviso',
+        'Elenco non aggiornato in tempo reale (' + (e && e.message ? e.message : 'errore di rete') + ').');
+      $('elenco').insertBefore(avviso, $('elenco').firstChild);
     });
 })();
 </script>

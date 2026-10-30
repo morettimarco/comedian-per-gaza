@@ -2,9 +2,18 @@
  * Dati per la landing page delle città (citta.html).
  *
  * Da incollare nel progetto Apps Script che serve il form, accanto a
- * getConfig() e submitIscrizione(). Se doPost() accetta solo un elenco
- * di funzioni consentite, aggiungi 'getCitta' a quell'elenco e
- * ripubblica il deployment (Gestisci deployment → Modifica → Nuova versione).
+ * getConfig() e submitIscrizione(). Va poi aggiunta all'oggetto
+ * `consentite` di doPost(), altrimenti l'API risponde
+ * "Funzione non consentita: getCitta":
+ *
+ *   var consentite = {
+ *     getConfig: getConfig,
+ *     submitIscrizione: submitIscrizione,
+ *     getCitta: getCitta
+ *   };
+ *
+ * Infine ripubblica il deployment (Gestisci deployment → Modifica →
+ * Versione: Nuova versione): salvare il codice non aggiorna l'URL /exec.
  *
  * Legge il foglio "Città" cercando le colonne per intestazione, quindi
  * l'ordine delle colonne può cambiare. Restituisce SOLO i campi pubblici:
