@@ -161,6 +161,12 @@
     background: #FDF1F1; border: 2px solid var(--rosso); color: #A51417;
   }
 
+  .avviso {
+    margin: 0 0 18px; padding: 10px 14px; border-radius: 10px;
+    background: var(--panna); border: 2px dashed var(--bordo);
+    color: var(--grigio); font-size: 13.5px; text-align: center;
+  }
+
   footer {
     margin-top: 30px; text-align: center; color: var(--grigio); font-size: 12.5px;
     border-top: 2px solid var(--panna); padding-top: 18px;
@@ -395,6 +401,10 @@
     .catch(function (e) {
       console.warn('getCitta non disponibile, uso la copia locale:', e);
       disegna(RISERVA);
+      // Avviso visibile: senza, una copia vecchia sembra il foglio aggiornato
+      var avviso = el('div', 'avviso',
+        'Elenco non aggiornato in tempo reale (' + (e && e.message ? e.message : 'errore di rete') + ').');
+      $('elenco').insertBefore(avviso, $('elenco').firstChild);
     });
 })();
 </script>
