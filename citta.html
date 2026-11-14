@@ -448,12 +448,13 @@
     a.appendChild(icona);
 
     var p = leggiFascia(f.testo);
-    var ora = el('span', 'ora', p.ora || 'Biglietti');
-    ora.appendChild(el('small', null, p.resto || 'su Eventbrite'));
+    var dove = /eventbrite\./i.test(f.url) ? 'su Eventbrite' : 'con il modulo online';
+    var ora = el('span', 'ora', p.ora || 'Ingresso');
+    ora.appendChild(el('small', null, p.resto || dove));
     a.appendChild(ora);
 
     a.appendChild(el('span', 'vai', 'Prenota qui →'));
-    a.setAttribute('aria-label', 'Prenota ' + (p.ora ? 'la fascia ' + p.ora : '') + ' su Eventbrite');
+    a.setAttribute('aria-label', 'Prenota ' + (p.ora ? 'la fascia ' + p.ora + ' ' : '') + dove);
     return a;
   }
 
@@ -519,13 +520,14 @@
     box.appendChild(dove);
 
     // prenotazioni: colonna "Contatti Prenotazione", una voce per riga.
-    // Le righe con un link Eventbrite diventano fasce prenotabili
-    // ("11-12 https://www.eventbrite.it/e/..."), il resto resta un contatto.
+    // Le righe con un link Eventbrite o di un modulo Google diventano fasce
+    // prenotabili ("11-12 https://www.eventbrite.it/e/..."), il resto resta un contatto.
+    var PRENOTAZIONE = /eventbrite\.|docs\.google\.com\/forms|forms\.gle\//i;
     var voci = String(c.contatti || '').split(/\n|;|,(?=\s*[@+\dhw])/).map(function (x) { return x.trim(); }).filter(Boolean);
     var fasce = [];
     voci = voci.filter(function (v) {
       var m = v.match(/(https?:\/\/|www\.)\S+/i);
-      if (!m || !/eventbrite\./i.test(m[0])) return true;
+      if (!m || !PRENOTAZIONE.test(m[0])) return true;
       fasce.push({ url: soloHttp(m[0]), testo: (v.slice(0, m.index) + ' ' + v.slice(m.index + m[0].length)).replace(/\s+/g, ' ').replace(/^[\s:–—-]+|[\s:–—-]+$/g, '') });
       return false;
     });
