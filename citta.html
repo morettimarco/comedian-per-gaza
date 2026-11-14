@@ -231,6 +231,72 @@
   }
   footer a { color: var(--rosso); font-weight: 700; }
 
+  /* ---------------- prenotazioni Eventbrite ---------------- */
+
+  .prenota { margin-top: 20px; text-align: left; }
+  .prenota .etichetta { text-align: center; margin-top: 0; }
+
+  /* tendina nativa: funziona anche nel browser interno di Instagram */
+  .prenota details { border-radius: var(--r); }
+  .prenota summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 13px 15px 11px; border-radius: var(--r);
+    background: var(--verde); color: var(--bianco);
+    font-family: var(--titolo); font-size: 25px; font-weight: 700; line-height: 1.1;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .prenota summary::-webkit-details-marker { display: none; }
+  .prenota summary:hover { background: #0F7A39; }
+  .prenota summary .quante {
+    font-family: var(--font); font-size: 12.5px; font-weight: 800; letter-spacing: .1em;
+    background: rgba(255,255,255,.18); padding: 3px 9px; border-radius: 999px;
+  }
+  .prenota summary .freccia { transition: transform .2s; font-size: 18px; }
+  .prenota details[open] summary { border-radius: var(--r) var(--r) 0 0; }
+  .prenota details[open] summary .freccia { transform: rotate(180deg); }
+  .prenota details .fasce {
+    border: 2px solid var(--verde); border-top: 0;
+    border-radius: 0 0 var(--r) var(--r); padding: 10px;
+  }
+
+  .fasce { display: grid; gap: 8px; }
+
+  /* una riga = tutto cliccabile: icona biglietto, orario, "prenota qui" */
+  a.fascia-eb {
+    display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 12px;
+    padding: 9px 12px 9px 9px; border-radius: 12px;
+    background: var(--panna); border: 2px solid var(--bordo);
+    color: var(--nero); text-decoration: none;
+  }
+  a.fascia-eb:hover { border-color: var(--verde); background: var(--bianco); }
+  .fascia-eb .icona {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: var(--verde); color: var(--bianco);
+  }
+  .fascia-eb .icona svg { width: 24px; height: 24px; display: block; }
+  .fascia-eb .ora {
+    font-family: var(--titolo); font-weight: 700; font-size: 26px; line-height: 1;
+    text-transform: uppercase; letter-spacing: .01em;
+  }
+  .fascia-eb .ora small {
+    display: block; margin-top: 3px;
+    font-family: var(--font); font-size: 12px; font-weight: 700; letter-spacing: .02em;
+    color: var(--grigio); text-transform: none;
+  }
+  .fascia-eb .ora { min-width: 0; }
+  .fascia-eb .vai {
+    font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em;
+    color: var(--verde-ui); white-space: nowrap;
+  }
+
+  @media (max-width: 400px) {
+    .prenota summary { font-size: 22px; }
+    .fascia-eb .ora { font-size: 23px; }
+    a.fascia-eb { gap: 10px; }
+  }
+
   @media (max-width: 400px) {
     h1 { font-size: 50px; }
     .claim { font-size: 27px; padding: 12px 16px 10px; }
@@ -362,6 +428,56 @@
     return el('span', 'contatto', s);
   }
 
+  var BIGLIETTO_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">' +
+    '<path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/>' +
+    '<path d="M14 6v12" stroke-dasharray="2 2"/></svg>';
+  var MAX_APERTE = 3; // oltre, le fasce stanno in una tendina chiusa
+
+  /** "11-12 con X" -> { ora: "11–12", resto: "con X" }; "16:00" -> { ora: "16.00" } */
+  function leggiFascia(t) {
+    var m = String(t || '').match(/^(?:ore\s*)?(\d{1,2})(?:[:.](\d{2}))?(?:\s*[-–—]\s*(\d{1,2})(?:[:.](\d{2}))?)?\b\s*(.*)$/i);
+    if (!m || +m[1] > 24) return { ora: '', resto: t };
+    var h = function (o, mm) { return mm && mm !== '00' ? o + '.' + mm : (m[3] ? o : o + '.00'); };
+    return { ora: h(+m[1], m[2]) + (m[3] ? '–' + h(+m[3], m[4]) : ''), resto: m[5] };
+  }
+
+  function rigaFascia(f) {
+    var a = link(f.url, 'fascia-eb');
+    var icona = el('span', 'icona');
+    icona.innerHTML = BIGLIETTO_SVG;
+    a.appendChild(icona);
+
+    var p = leggiFascia(f.testo);
+    var ora = el('span', 'ora', p.ora || 'Biglietti');
+    ora.appendChild(el('small', null, p.resto || 'su Eventbrite'));
+    a.appendChild(ora);
+
+    a.appendChild(el('span', 'vai', 'Prenota qui →'));
+    a.setAttribute('aria-label', 'Prenota ' + (p.ora ? 'la fascia ' + p.ora : '') + ' su Eventbrite');
+    return a;
+  }
+
+  function prenotazioni(fasce) {
+    var box = el('div', 'prenota');
+    var lista = el('div', 'fasce');
+    fasce.forEach(function (f) { if (f.url) lista.appendChild(rigaFascia(f)); });
+
+    if (fasce.length <= MAX_APERTE) {
+      box.appendChild(el('span', 'etichetta', 'Prenota il tuo posto'));
+      box.appendChild(lista);
+      return box;
+    }
+    var det = el('details');
+    var sum = el('summary');
+    sum.appendChild(el('span', null, 'Prenota'));
+    sum.appendChild(el('span', 'quante', fasce.length + ' fasce orarie'));
+    sum.appendChild(el('span', 'freccia', '▾'));
+    det.appendChild(sum);
+    det.appendChild(lista);
+    box.appendChild(det);
+    return box;
+  }
+
   function scheda(c) {
     var id = slug(c.citta);
     var box = el('section', 'citta');
@@ -402,17 +518,31 @@
     }
     box.appendChild(dove);
 
-    // prenotazioni: colonna "Contatti Prenotazione", altrimenti sito / IG del locale
-    box.appendChild(el('span', 'etichetta', 'Per prenotare'));
-    var pren = el('div', 'riga');
+    // prenotazioni: colonna "Contatti Prenotazione", una voce per riga.
+    // Le righe con un link Eventbrite diventano fasce prenotabili
+    // ("11-12 https://www.eventbrite.it/e/..."), il resto resta un contatto.
     var voci = String(c.contatti || '').split(/\n|;|,(?=\s*[@+\dhw])/).map(function (x) { return x.trim(); }).filter(Boolean);
-    if (!voci.length) {
+    var fasce = [];
+    voci = voci.filter(function (v) {
+      var m = v.match(/(https?:\/\/|www\.)\S+/i);
+      if (!m || !/eventbrite\./i.test(m[0])) return true;
+      fasce.push({ url: soloHttp(m[0]), testo: (v.slice(0, m.index) + ' ' + v.slice(m.index + m[0].length)).replace(/\s+/g, ' ').replace(/^[\s:–—-]+|[\s:–—-]+$/g, '') });
+      return false;
+    });
+    if (fasce.length) box.appendChild(prenotazioni(fasce));
+
+    if (!fasce.length && !voci.length) {
       if (soloHttp(c.sito)) voci.push(soloHttp(c.sito));
       if (handleIg(c.igLocale)) voci.push('@' + handleIg(c.igLocale));
     }
-    voci.forEach(function (v) { pren.appendChild(contatto(v)); });
-    if (!voci.length) pren.appendChild(el('span', 'vuoto', 'Contatti in arrivo'));
-    box.appendChild(pren);
+    // senza Eventbrite resta il blocco di prima; con Eventbrite solo gli eventuali contatti extra
+    if (voci.length || !fasce.length) {
+      box.appendChild(el('span', 'etichetta', fasce.length ? 'Altri contatti' : 'Per prenotare'));
+      var pren = el('div', 'riga');
+      voci.forEach(function (v) { pren.appendChild(contatto(v)); });
+      if (!voci.length) pren.appendChild(el('span', 'vuoto', 'Prenotazioni in arrivo'));
+      box.appendChild(pren);
+    }
 
     // organizzatore
     var ig = handleIg(c.igReferente);
