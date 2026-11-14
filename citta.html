@@ -433,6 +433,9 @@
     '<path d="M14 6v12" stroke-dasharray="2 2"/></svg>';
   var MAX_APERTE = 3; // oltre, le fasce stanno in una tendina chiusa
 
+  // Ordine delle città sulla pagina; una città nuova non in elenco va in fondo
+  var ORDINE = ['milano', 'bologna', 'parma', 'ancona', 'palermo', 'genova', 'roma'];
+
   /** "11-12 con X" -> { ora: "11–12", resto: "con X" }; "16:00" -> { ora: "16.00" } */
   function leggiFascia(t) {
     var m = String(t || '').match(/^(?:ore\s*)?(\d{1,2})(?:[:.](\d{2}))?(?:\s*[-–—]\s*(\d{1,2})(?:[:.](\d{2}))?)?\b\s*(.*)$/i);
@@ -577,8 +580,12 @@
   function disegna(lista) {
     lista = lista.filter(function (c) { return c && String(c.citta || '').trim(); });
 
-    // ordine: per data, poi alfabetico; senza data in fondo
+    // ordine: prima le città di ORDINE, nell'ordine scelto; le altre dopo,
+    // per data e poi alfabetico (senza data in fondo)
+    var pos = function (c) { var i = ORDINE.indexOf(slug(c.citta)); return i < 0 ? Infinity : i; };
     lista.sort(function (a, b) {
+      var pa = pos(a), pb = pos(b);
+      if (pa !== pb) return pa < pb ? -1 : 1;
       var da = leggiData(a.data), db = leggiData(b.data);
       var ta = da ? da.quando.getTime() : Infinity, tb = db ? db.quando.getTime() : Infinity;
       return ta - tb || a.citta.localeCompare(b.citta, 'it');
