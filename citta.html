@@ -175,6 +175,7 @@
   }
   a.ig:hover { background: var(--rosso); }
   a.ig svg { width: 22px; height: 22px; display: block; }
+  a.contatto svg { width: 18px; height: 18px; flex: none; display: block; }
 
   /* call to action */
   .azioni { display: grid; gap: 10px; margin-top: 20px; }
@@ -418,14 +419,27 @@
   /** Contatto libero dal foglio -> link adatto (sito, mail, telefono, Instagram). */
   function contatto(s) {
     s = s.trim();
-    if (/^https?:\/\//i.test(s) || /^www\./i.test(s)) {
-      var u = soloHttp(s);
-      return u ? link(u, 'contatto', s.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '')) : el('span', 'contatto', s);
+    // un link ovunque nella riga, anche dopo un'etichetta ("Prenotazioni: https://...")
+    var m = s.match(/(https?:\/\/|www\.)\S+/i);
+    var u = m ? soloHttp(m[0].replace(/[).,;]+$/, '')) : '';
+    if (u) {
+      // profilo Instagram -> @nome con icona; altri siti -> solo il dominio
+      var ig = u.match(/^https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9._]{1,30})\/?(?:[?#].*)?$/i);
+      if (ig) return contattoIg(ig[1]);
+      return link(u, 'contatto', '🌐 ' + u.replace(/^https?:\/\/(www\.)?/i, '').split(/[\/?#]/)[0]);
     }
     if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) return link('mailto:' + s, 'contatto', '✉ ' + s);
     if (/^\+?[\d\s().-]{6,}$/.test(s)) return link('tel:' + s.replace(/[^\d+]/g, ''), 'contatto', '☎ ' + s);
-    if (/^@[A-Za-z0-9._]+$/.test(s)) return link('https://instagram.com/' + s.slice(1), 'contatto', s);
+    if (/^@[A-Za-z0-9._]+$/.test(s)) return contattoIg(s.slice(1));
     return el('span', 'contatto', s);
+  }
+
+  function contattoIg(nome) {
+    var a = link('https://instagram.com/' + nome, 'contatto');
+    a.innerHTML = IG_SVG;
+    a.appendChild(document.createTextNode('@' + nome));
+    a.setAttribute('aria-label', 'Instagram @' + nome);
+    return a;
   }
 
   var BIGLIETTO_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">' +
