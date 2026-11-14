@@ -21,7 +21,13 @@
  *
  * Colonne facoltative lette se presenti:
  *   - "Link Form"             → URL del form per i comici di quella città
- *   - "Contatti Prenotazione" → telefono, mail, link o @instagram per prenotare
+ *   - "Contatti Prenotazione" → telefono, mail, link o @instagram per prenotare.
+ *     Una voce per riga (a capo con Ctrl+Invio nella cella). Le righe con un
+ *     link Eventbrite diventano fasce prenotabili in citta.html, es.:
+ *       11-12 https://www.eventbrite.it/e/...
+ *       12-13 con Nome Headliner https://www.eventbrite.it/e/...
+ *     Fino a 3 righe restano visibili, oltre finiscono in una tendina.
+ *     (Solo commento: il codice qui sotto non cambia, niente da ripubblicare.)
  */
 function getCitta() {
   var foglio = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Città');
