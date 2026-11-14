@@ -416,35 +416,49 @@
     return { quando: d, ora: m[4] ? (+m[4]) + '.' + m[5] : '' };
   }
 
-  /** Contatto libero dal foglio -> link adatto (sito, mail, telefono, Instagram). */
-  function contatto(s) {
-    s = s.trim();
-    // un link ovunque nella riga, anche dopo un'etichetta ("Prenotazioni: https://...")
-    var m = s.match(/(https?:\/\/|www\.)\S+/i);
-    var u = m ? soloHttp(m[0].replace(/[).,;]+$/, '')) : '';
-    if (u) {
-      // profilo Instagram -> @nome con icona; altri siti -> solo il dominio
-      var ig = u.match(/^https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9._]{1,30})\/?(?:[?#].*)?$/i);
-      if (ig) return contattoIg(ig[1]);
-      return link(u, 'contatto', '🌐 ' + u.replace(/^https?:\/\/(www\.)?/i, '').split(/[\/?#]/)[0]);
-    }
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) return link('mailto:' + s, 'contatto', '✉ ' + s);
-    if (/^\+?[\d\s().-]{6,}$/.test(s)) return link('tel:' + s.replace(/[^\d+]/g, ''), 'contatto', '☎ ' + s);
-    if (/^@[A-Za-z0-9._]+$/.test(s)) return contattoIg(s.slice(1));
-    return el('span', 'contatto', s);
-  }
-
-  function contattoIg(nome) {
-    var a = link('https://instagram.com/' + nome, 'contatto');
-    a.innerHTML = IG_SVG;
-    a.appendChild(document.createTextNode('@' + nome));
-    a.setAttribute('aria-label', 'Instagram @' + nome);
-    return a;
-  }
-
-  var BIGLIETTO_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">' +
+  var SVG_APRI = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  var BIGLIETTO_SVG = SVG_APRI +
     '<path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/>' +
     '<path d="M14 6v12" stroke-dasharray="2 2"/></svg>';
+  var SITO_SVG = SVG_APRI + '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>';
+  var MAIL_SVG = SVG_APRI + '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
+  var TEL_SVG = SVG_APRI + '<path d="M5 3h3l2 5-2.5 1.5a11 11 0 0 0 7 7L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>';
+
+  // link che portano a un modulo di prenotazione vero e proprio
+  var PRENOTAZIONE = /eventbrite\.|docs\.google\.com\/forms|forms\.gle\//i;
+
+  /**
+   * Una riga della colonna "Contatti Prenotazione" -> riga "Prenota qui"
+   * { url, icona, titolo, sotto, fascia } oppure null se non c'e' niente da cliccare.
+   * Il link viene trovato anche dopo un'etichetta ("Prenotazioni: https://...").
+   */
+  function rigaDa(s) {
+    s = s.trim();
+    var m = s.match(/(https?:\/\/|www\.)\S+/i);
+    var u = m ? soloHttp(m[0].replace(/[).,;]+$/, '')) : '';
+    if (u && PRENOTAZIONE.test(u)) {
+      // biglietti: il testo intorno al link e' la fascia ("11-12 con X")
+      var testo = (s.slice(0, m.index) + ' ' + s.slice(m.index + m[0].length))
+        .replace(/\s+/g, ' ').replace(/^[\s:–—-]+|[\s:–—-]+$/g, '');
+      var p = leggiFascia(testo);
+      var dove = /eventbrite\./i.test(u) ? 'su Eventbrite' : 'con il modulo online';
+      return { url: u, icona: BIGLIETTO_SVG, titolo: p.ora || 'Ingresso', sotto: p.resto || dove,
+               fascia: !!p.ora, aria: 'Prenota ' + (p.ora ? 'la fascia ' + p.ora + ' ' : '') + dove };
+    }
+    var ig = u ? u.match(/^https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9._]{1,30})\/?(?:[?#].*)?$/i)
+               : s.match(/^@([A-Za-z0-9._]{1,30})$/);
+    if (ig) return { url: 'https://instagram.com/' + ig[1], icona: IG_SVG, titolo: 'Instagram',
+                     sotto: 'scrivi a @' + ig[1], aria: 'Prenota scrivendo su Instagram a @' + ig[1] };
+    if (u) {
+      var dominio = u.replace(/^https?:\/\/(www\.)?/i, '').split(/[\/?#]/)[0];
+      return { url: u, icona: SITO_SVG, titolo: 'Sito', sotto: dominio, aria: 'Prenota sul sito ' + dominio };
+    }
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))
+      return { url: 'mailto:' + s, icona: MAIL_SVG, titolo: 'Mail', sotto: s, aria: 'Prenota via mail a ' + s };
+    if (/^\+?[\d\s().-]{6,}$/.test(s))
+      return { url: 'tel:' + s.replace(/[^\d+]/g, ''), icona: TEL_SVG, titolo: 'Telefono', sotto: s, aria: 'Prenota chiamando ' + s };
+    return null;
+  }
   var MAX_APERTE = 3; // oltre, le fasce stanno in una tendina chiusa
 
   // Ordine delle città sulla pagina; una città nuova non in elenco va in fondo
@@ -458,37 +472,36 @@
     return { ora: h(+m[1], m[2]) + (m[3] ? '–' + h(+m[3], m[4]) : ''), resto: m[5] };
   }
 
-  function rigaFascia(f) {
-    var a = link(f.url, 'fascia-eb');
+  function rigaPrenota(r) {
+    var a = link(r.url, 'fascia-eb');
     var icona = el('span', 'icona');
-    icona.innerHTML = BIGLIETTO_SVG;
+    icona.innerHTML = r.icona;
     a.appendChild(icona);
 
-    var p = leggiFascia(f.testo);
-    var dove = /eventbrite\./i.test(f.url) ? 'su Eventbrite' : 'con il modulo online';
-    var ora = el('span', 'ora', p.ora || 'Ingresso');
-    ora.appendChild(el('small', null, p.resto || dove));
-    a.appendChild(ora);
+    var titolo = el('span', 'ora', r.titolo);
+    titolo.appendChild(el('small', null, r.sotto));
+    a.appendChild(titolo);
 
     a.appendChild(el('span', 'vai', 'Prenota qui →'));
-    a.setAttribute('aria-label', 'Prenota ' + (p.ora ? 'la fascia ' + p.ora + ' ' : '') + dove);
+    a.setAttribute('aria-label', r.aria);
     return a;
   }
 
-  function prenotazioni(fasce) {
+  function prenotazioni(righe) {
     var box = el('div', 'prenota');
     var lista = el('div', 'fasce');
-    fasce.forEach(function (f) { if (f.url) lista.appendChild(rigaFascia(f)); });
+    righe.forEach(function (r) { lista.appendChild(rigaPrenota(r)); });
 
-    if (fasce.length <= MAX_APERTE) {
+    if (righe.length <= MAX_APERTE) {
       box.appendChild(el('span', 'etichetta', 'Prenota il tuo posto'));
       box.appendChild(lista);
       return box;
     }
+    var tutteFasce = righe.every(function (r) { return r.fascia; });
     var det = el('details');
     var sum = el('summary');
     sum.appendChild(el('span', null, 'Prenota'));
-    sum.appendChild(el('span', 'quante', fasce.length + ' fasce orarie'));
+    sum.appendChild(el('span', 'quante', righe.length + (tutteFasce ? ' fasce orarie' : ' modi')));
     sum.appendChild(el('span', 'freccia', '▾'));
     det.appendChild(sum);
     det.appendChild(lista);
@@ -537,30 +550,27 @@
     box.appendChild(dove);
 
     // prenotazioni: colonna "Contatti Prenotazione", una voce per riga.
-    // Le righe con un link Eventbrite o di un modulo Google diventano fasce
-    // prenotabili ("11-12 https://www.eventbrite.it/e/..."), il resto resta un contatto.
-    var PRENOTAZIONE = /eventbrite\.|docs\.google\.com\/forms|forms\.gle\//i;
+    // Ogni voce cliccabile (Eventbrite, modulo, Instagram, sito, mail, telefono)
+    // diventa una riga "Prenota qui"; se la colonna e' vuota uso sito e IG del locale.
     var voci = String(c.contatti || '').split(/\n|;|,(?=\s*[@+\dhw])/).map(function (x) { return x.trim(); }).filter(Boolean);
-    var fasce = [];
-    voci = voci.filter(function (v) {
-      var m = v.match(/(https?:\/\/|www\.)\S+/i);
-      if (!m || !PRENOTAZIONE.test(m[0])) return true;
-      fasce.push({ url: soloHttp(m[0]), testo: (v.slice(0, m.index) + ' ' + v.slice(m.index + m[0].length)).replace(/\s+/g, ' ').replace(/^[\s:–—-]+|[\s:–—-]+$/g, '') });
-      return false;
-    });
-    if (fasce.length) box.appendChild(prenotazioni(fasce));
-
-    if (!fasce.length && !voci.length) {
+    if (!voci.length) {
       if (soloHttp(c.sito)) voci.push(soloHttp(c.sito));
       if (handleIg(c.igLocale)) voci.push('@' + handleIg(c.igLocale));
     }
-    // senza Eventbrite resta il blocco di prima; con Eventbrite solo gli eventuali contatti extra
-    if (voci.length || !fasce.length) {
-      box.appendChild(el('span', 'etichetta', fasce.length ? 'Altri contatti' : 'Per prenotare'));
-      var pren = el('div', 'riga');
-      voci.forEach(function (v) { pren.appendChild(contatto(v)); });
-      if (!voci.length) pren.appendChild(el('span', 'vuoto', 'Prenotazioni in arrivo'));
-      box.appendChild(pren);
+    var righe = [], testi = [];
+    voci.forEach(function (v) { var r = rigaDa(v); if (r) righe.push(r); else testi.push(v); });
+
+    if (righe.length) box.appendChild(prenotazioni(righe));
+    else {
+      box.appendChild(el('span', 'etichetta', 'Prenota il tuo posto'));
+      if (!testi.length) box.appendChild(el('div', 'vuoto', 'Prenotazioni in arrivo'));
+    }
+    // testo libero senza link (es. "Ingresso libero"): resta come nota
+    if (testi.length) {
+      var note = el('div', 'riga');
+      if (righe.length) note.style.marginTop = '10px';
+      testi.forEach(function (t) { note.appendChild(el('span', 'contatto', t)); });
+      box.appendChild(note);
     }
 
     // organizzatore
