@@ -433,6 +433,9 @@
     '<path d="M14 6v12" stroke-dasharray="2 2"/></svg>';
   var MAX_APERTE = 3; // oltre, le fasce stanno in una tendina chiusa
 
+  // Ordine delle città sulla pagina; una città nuova non in elenco va in fondo
+  var ORDINE = ['milano', 'bologna', 'parma', 'ancona', 'palermo', 'genova', 'roma'];
+
   /** "11-12 con X" -> { ora: "11–12", resto: "con X" }; "16:00" -> { ora: "16.00" } */
   function leggiFascia(t) {
     var m = String(t || '').match(/^(?:ore\s*)?(\d{1,2})(?:[:.](\d{2}))?(?:\s*[-–—]\s*(\d{1,2})(?:[:.](\d{2}))?)?\b\s*(.*)$/i);
@@ -448,12 +451,13 @@
     a.appendChild(icona);
 
     var p = leggiFascia(f.testo);
-    var ora = el('span', 'ora', p.ora || 'Biglietti');
-    ora.appendChild(el('small', null, p.resto || 'su Eventbrite'));
+    var dove = /eventbrite\./i.test(f.url) ? 'su Eventbrite' : 'con il modulo online';
+    var ora = el('span', 'ora', p.ora || 'Ingresso');
+    ora.appendChild(el('small', null, p.resto || dove));
     a.appendChild(ora);
 
     a.appendChild(el('span', 'vai', 'Prenota qui →'));
-    a.setAttribute('aria-label', 'Prenota ' + (p.ora ? 'la fascia ' + p.ora : '') + ' su Eventbrite');
+    a.setAttribute('aria-label', 'Prenota ' + (p.ora ? 'la fascia ' + p.ora + ' ' : '') + dove);
     return a;
   }
 
@@ -519,13 +523,14 @@
     box.appendChild(dove);
 
     // prenotazioni: colonna "Contatti Prenotazione", una voce per riga.
-    // Le righe con un link Eventbrite diventano fasce prenotabili
-    // ("11-12 https://www.eventbrite.it/e/..."), il resto resta un contatto.
+    // Le righe con un link Eventbrite o di un modulo Google diventano fasce
+    // prenotabili ("11-12 https://www.eventbrite.it/e/..."), il resto resta un contatto.
+    var PRENOTAZIONE = /eventbrite\.|docs\.google\.com\/forms|forms\.gle\//i;
     var voci = String(c.contatti || '').split(/\n|;|,(?=\s*[@+\dhw])/).map(function (x) { return x.trim(); }).filter(Boolean);
     var fasce = [];
     voci = voci.filter(function (v) {
       var m = v.match(/(https?:\/\/|www\.)\S+/i);
-      if (!m || !/eventbrite\./i.test(m[0])) return true;
+      if (!m || !PRENOTAZIONE.test(m[0])) return true;
       fasce.push({ url: soloHttp(m[0]), testo: (v.slice(0, m.index) + ' ' + v.slice(m.index + m[0].length)).replace(/\s+/g, ' ').replace(/^[\s:–—-]+|[\s:–—-]+$/g, '') });
       return false;
     });
@@ -575,8 +580,12 @@
   function disegna(lista) {
     lista = lista.filter(function (c) { return c && String(c.citta || '').trim(); });
 
-    // ordine: per data, poi alfabetico; senza data in fondo
+    // ordine: prima le città di ORDINE, nell'ordine scelto; le altre dopo,
+    // per data e poi alfabetico (senza data in fondo)
+    var pos = function (c) { var i = ORDINE.indexOf(slug(c.citta)); return i < 0 ? Infinity : i; };
     lista.sort(function (a, b) {
+      var pa = pos(a), pb = pos(b);
+      if (pa !== pb) return pa < pb ? -1 : 1;
       var da = leggiData(a.data), db = leggiData(b.data);
       var ta = da ? da.quando.getTime() : Infinity, tb = db ? db.quando.getTime() : Infinity;
       return ta - tb || a.citta.localeCompare(b.citta, 'it');
