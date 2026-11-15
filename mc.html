@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comedian per Gaza 2026 — MC</title>
+<!-- pagina riservata agli MC: fuori dai motori di ricerca -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;700;800&display=swap">
+<style>
+  /* Stessa palette e tipografia di citta.html */
+  :root {
+    --rosso: #E41B1F;
+    --verde: #159246;
+    --verde-ui: #138741;
+    --nero: #171616;
+    --panna: #F2F2F1;
+    --bianco: #FFFFFF;
+    --grigio: #6E6864;
+    --bordo: #DCD8D5;
+    --r: 14px;
+    --font: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --titolo: "zuume-rough", "Anton", Impact, "Arial Narrow", sans-serif;
+  }
+
+  .rough {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -35 27.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -35 27.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  }
+
+  .fascia-top { height: 22px; background: var(--verde); }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+
+  body {
+    margin: 0;
+    background: var(--bianco);
+    color: var(--nero);
+    font: 16px/1.5 var(--font);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 18px 60px; }
+
+  /* ---------------- intestazione ---------------- */
+
+  header { text-align: center; margin-bottom: 22px; }
+  .logo { width: 110px; height: auto; display: block; margin: 0 auto 16px; }
+  h1 {
+    margin: 0 0 4px; color: var(--rosso);
+    font-family: var(--titolo); font-weight: 700;
+    font-size: 72px; line-height: .95; text-transform: uppercase;
+  }
+  .anno {
+    margin: 0; color: var(--nero);
+    font-size: 14px; font-weight: 800; letter-spacing: .32em; text-transform: uppercase;
+  }
+
+  /* ---------------- accesso con codice ---------------- */
+
+  .accesso {
+    border: 2px solid var(--nero); border-radius: var(--r);
+    padding: 20px 16px 18px; text-align: center;
+  }
+  .accesso h2 {
+    margin: 0 0 6px; font-family: var(--titolo); font-weight: 700;
+    font-size: 30px; line-height: 1.05; text-transform: uppercase;
+  }
+  .accesso p { margin: 0 0 16px; color: var(--grigio); font-size: 14.5px; }
+  .accesso form { display: flex; gap: 8px; }
+  .accesso input {
+    flex: 1; min-width: 0; padding: 13px 14px; font: 600 17px var(--font);
+    color: var(--nero); background: var(--panna);
+    border: 2px solid var(--bordo); border-radius: 10px;
+  }
+  .accesso input:focus { border-color: var(--nero); background: var(--bianco); outline: none; }
+  .accesso button {
+    flex: none; padding: 0 20px; border: 0; border-radius: 10px; cursor: pointer;
+    background: var(--verde); color: var(--bianco);
+    font-family: var(--titolo); font-size: 22px; text-transform: uppercase; letter-spacing: .03em;
+  }
+  .accesso button:disabled { opacity: .6; cursor: default; }
+  .errore { color: var(--rosso); font-size: 14px; font-weight: 700; margin-top: 10px; min-height: 21px; }
+
+  /* ---------------- ricerca ---------------- */
+
+  .cerca {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--bianco); padding: 10px 0 12px;
+  }
+  .campo { position: relative; }
+  .campo svg {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px; color: var(--grigio); pointer-events: none;
+  }
+  #q {
+    width: 100%; padding: 15px 48px 15px 50px;
+    font: 600 18px var(--font); color: var(--nero);
+    background: var(--panna); border: 2px solid var(--nero); border-radius: 999px;
+    -webkit-appearance: none; appearance: none;
+  }
+  #q:focus { background: var(--bianco); outline: 3px solid var(--verde); outline-offset: 2px; }
+  #q::-webkit-search-cancel-button { display: none; }
+  #pulisci {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
+    background: var(--bordo); color: var(--nero); font-size: 20px; line-height: 1;
+  }
+  .stato-ricerca { margin: 8px 4px 0; color: var(--grigio); font-size: 13.5px; font-weight: 600; }
+
+  /* scorciatoie per fascia */
+  .fasce-rapide { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  .fasce-rapide button {
+    padding: 8px 13px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--nero); background: var(--bianco); color: var(--nero);
+    font: 700 14px var(--font); font-variant-numeric: tabular-nums;
+  }
+  .fasce-rapide button:hover, .fasce-rapide button.attiva { background: var(--nero); color: var(--bianco); }
+  .suggerimento { color: var(--grigio); font-size: 14.5px; margin: 6px 4px 0; }
+
+  /* ---------------- risultati ---------------- */
+
+  #risultati { display: grid; gap: 10px; margin-top: 6px; }
+
+  .persona {
+    border: 2px solid var(--nero); border-radius: var(--r);
+    padding: 14px 14px 12px; background: var(--bianco);
+  }
+  .persona .nome {
+    margin: 0 0 8px; font-size: 21px; font-weight: 800; line-height: 1.2;
+  }
+  mark { background: #FFE58A; color: inherit; border-radius: 3px; padding: 0 1px; }
+
+  .ruoli { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .ruolo {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px 4px; border-radius: 8px;
+    background: var(--verde-ui); color: var(--bianco);
+    font-size: 13.5px; font-weight: 800; letter-spacing: .02em;
+  }
+  .ruolo .ora { font-family: var(--titolo); font-weight: 700; font-size: 19px; letter-spacing: .02em; line-height: 1; }
+  .ruolo.mc { background: var(--nero); }
+  .ruolo.head { background: var(--rosso); }
+  .ruolo.altro { background: var(--panna); color: var(--grigio); border: 1px solid var(--bordo); }
+
+  .azioni { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .azioni a, .azioni > span {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    min-height: 62px; padding: 8px 4px; border-radius: 10px; text-align: center;
+    background: var(--panna); border: 2px solid var(--bordo);
+    color: var(--nero); text-decoration: none; font-size: 12.5px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .azioni a:hover { border-color: var(--nero); background: var(--bianco); }
+  .azioni a.tel { background: var(--verde); border-color: var(--verde); color: var(--bianco); }
+  .azioni a.tel:hover { background: #0F7A39; }
+  .azioni svg { width: 22px; height: 22px; display: block; }
+  .azioni > span { color: var(--grigio); background: var(--bianco); border-style: dashed; }
+  .dettagli {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px;
+    margin-top: 9px; font-size: 14px; color: #333;
+  }
+  .dettagli .num { font-weight: 700; font-variant-numeric: tabular-nums; user-select: all; }
+  .dettagli .ig { color: var(--grigio); }
+
+  .vuoto, .skel { color: var(--grigio); font-size: 15px; text-align: center; padding: 18px 0; }
+
+  .banner {
+    padding: 12px 14px; border-radius: 10px; margin: 0 0 14px;
+    font-size: 14px; font-weight: 600;
+    background: #FDF1F1; border: 2px solid var(--rosso); color: #A51417;
+  }
+  .banner button {
+    margin-left: 6px; font: inherit; font-weight: 800; cursor: pointer;
+    background: none; border: 0; color: inherit; text-decoration: underline;
+  }
+
+  footer {
+    margin-top: 30px; text-align: center; color: var(--grigio); font-size: 12.5px;
+    border-top: 2px solid var(--panna); padding-top: 18px;
+  }
+  footer button {
+    font: inherit; font-weight: 700; color: var(--rosso); background: none; border: 0;
+    cursor: pointer; text-decoration: underline; padding: 0 4px;
+  }
+
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--nero); outline-offset: 2px; }
+
+  @media (max-width: 400px) {
+    h1 { font-size: 60px; }
+    .persona .nome { font-size: 19px; }
+    #q { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+<div class="fascia-top"></div>
+<div class="wrap">
+
+  <header>
+    <img class="logo" src="logo.png" alt="Comedian per Gaza" width="110" height="135">
+    <h1 class="rough">MC</h1>
+    <p class="anno">Comedian per Gaza · 2026</p>
+  </header>
+
+  <!-- 1. accesso -->
+  <section class="accesso" id="accesso" hidden>
+    <h2>Area riservata agli MC</h2>
+    <p>Inserisci il codice che ti hanno dato gli organizzatori.</p>
+    <form id="form-codice" autocomplete="off">
+      <input id="codice" type="password" inputmode="text" autocapitalize="off" spellcheck="false"
+             placeholder="Codice MC" aria-label="Codice MC" required>
+      <button type="submit" id="entra">Entra</button>
+    </form>
+    <div class="errore" id="errore" role="alert"></div>
+  </section>
+
+  <!-- 2. rubrica -->
+  <section id="rubrica" hidden>
+    <div id="avviso"></div>
+
+    <div class="cerca">
+      <div class="campo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="q" type="search" autocomplete="off" autocorrect="off" autocapitalize="words"
+               spellcheck="false" enterkeyhint="search"
+               placeholder="Cerca nome o cognome…" aria-label="Cerca per nome, cognome o fascia"
+               aria-controls="risultati">
+        <button type="button" id="pulisci" aria-label="Cancella ricerca" hidden>×</button>
+      </div>
+      <div class="stato-ricerca" id="stato" aria-live="polite"></div>
+    </div>
+
+    <div id="inizio">
+      <p class="suggerimento">Oppure tocca una fascia per vedere tutta la line up:</p>
+      <div class="fasce-rapide" id="fasce-rapide"></div>
+    </div>
+
+    <div id="risultati" role="list"></div>
+  </section>
+
+  <div class="skel" id="carico">Carico…</div>
+
+  <footer>
+    Comedian per Gaza 2026 · uso riservato agli MC, non condividere questi contatti
+    <br><button type="button" id="aggiorna" hidden>Aggiorna elenco</button>
+    <button type="button" id="esci" hidden>Esci</button>
+  </footer>
+</div>
+<div class="fascia-top"></div>
+
+<script>
+(function () {
+  // Stessa API Apps Script di index.html e citta.html: vedi apps-script/MC.gs
+  var API = 'https://script.google.com/macros/s/AKfycbzacyh8bspCAGjym4DzgkCaYyFPTpFWOOKExbyXaI0Kg5sE59tonBJ8EBumhs6xfg0v/exec';
+  var CHIAVE = 'cpg-mc-codice';
+  var MAX_RISULTATI = 40;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var persone = [];       // elenco scaricato
+  var codice = '';
+  var scaricatoIl = 0;
+
+  // ---------- memoria del codice (può non esserci: browser di Instagram ecc.) ----------
+  function salva(c) { try { localStorage.setItem(CHIAVE, c); } catch (e) {} }
+  function leggi() { try { return localStorage.getItem(CHIAVE) || ''; } catch (e) { return ''; } }
+  function dimentica() { try { localStorage.removeItem(CHIAVE); } catch (e) {} }
+
+  // ---------- utilità ----------
+  function el(tag, cls, testo) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (testo != null) e.textContent = testo;
+    return e;
+  }
+  function norm(s) {
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+  /** "14-15" / "14 - 15" / "14:00-15:00" -> { da: 14, testo: "14–15" } */
+  function leggiFascia(s) {
+    var m = String(s || '').match(/(\d{1,2})(?:[:.]\d{2})?\s*[-–—]\s*(\d{1,2})/);
+    if (!m) { var h = String(s || '').match(/^\s*(\d{1,2})\b/); return h ? { da: +h[1], testo: h[1] } : null; }
+    return { da: +m[1], testo: (+m[1]) + '–' + (+m[2]) };
+  }
+  function handleIg(s) {
+    var m = String(s || '').trim().match(/(?:instagram\.com\/)?@?([A-Za-z0-9._]{1,30})\/?(?:[?#].*)?$/);
+    return m ? m[1] : '';
+  }
+  /** cifre per tel: e wa.me; i cellulari italiani senza prefisso prendono il +39 */
+  function cifre(tel) {
+    var s = String(tel || '').trim().replace(/^00/, '+');
+    var d = s.replace(/\D/g, '');
+    if (d.length < 6) return '';
+    if (s.charAt(0) !== '+' && /^3\d{8,9}$/.test(d)) d = '39' + d;
+    return d;
+  }
+  function etichettaPosizione(p) {
+    p = String(p || '').trim();
+    if (/^head/i.test(p)) return 'Headliner';
+    if (/^\d+$/.test(p)) return 'Line up #' + p;
+    return p || 'In line up';
+  }
+  /** Ruoli della persona, uno per fascia: [{ fascia, tipo, testo }] */
+  function ruoli(p) {
+    var r = [];
+    var fm = leggiFascia(p.orarioMC);
+    var fc = leggiFascia(p.fascia);
+    var posMC = /^mc$/i.test(String(p.posizione || '').trim());
+    if (fm) r.push({ f: fm, tipo: 'mc', testo: 'MC' });
+    if (fc && !(posMC && fm && fm.da === fc.da)) {
+      var head = /^head/i.test(p.posizione || '');
+      r.push({ f: fc, tipo: posMC ? 'mc' : head ? 'head' : '', testo: posMC ? 'MC' : etichettaPosizione(p.posizione) });
+    }
+    if (!fm && !fc && (p.fascia || p.orarioMC)) r.push({ f: null, tipo: 'altro', testo: p.fascia || p.orarioMC });
+    return r.sort(function (a, b) { return (a.f ? a.f.da : 99) - (b.f ? b.f.da : 99); });
+  }
+  function ordineInFascia(p, ora) {
+    var rr = ruoli(p).filter(function (x) { return x.f && x.f.da === ora; })[0];
+    if (!rr) return 9;
+    if (rr.tipo === 'mc') return 0;
+    if (rr.tipo === 'head') return 8;
+    var n = String(p.posizione || '').match(/\d+/);
+    return n ? +n[0] : 7;
+  }
+
+  // ---------- icone ----------
+  var SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  var ICONE = {
+    tel: SVG + '<path d="M5 3h3l2 5-2.5 1.5a11 11 0 0 0 7 7L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>',
+    wa: SVG + '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9.5 9.5c.3 1.6 1.4 3 3 3.8l1-1 2 .8-.3 1.6c-3 .2-6.4-3-6.2-6.2l1.6-.3.8 2z" stroke-width="1.4"/></svg>',
+    ig: SVG + '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>'
+  };
+  function bottone(href, cls, icona, testo, aria) {
+    var a = el('a', cls);
+    a.href = href;
+    if (/^https?:/i.test(href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+    a.innerHTML = ICONE[icona];
+    a.appendChild(el('span', null, testo));
+    a.setAttribute('aria-label', aria);
+    return a;
+  }
+  function manca(testo) { return el('span', null, testo); }
+
+  // ---------- nome con le parti trovate evidenziate ----------
+  function nomeEvidenziato(nome, token) {
+    var h = el('h3', 'nome');
+    if (!token.length) { h.textContent = nome; return h; }
+    // ogni parola del nome: evidenzio il prefisso che corrisponde a un token
+    nome.split(/(\s+)/).forEach(function (pezzo) {
+      var n = norm(pezzo), lung = 0;
+      token.forEach(function (t) { if (n.indexOf(t) === 0 && t.length > lung) lung = t.length; });
+      if (lung && /\S/.test(pezzo)) {
+        h.appendChild(el('mark', null, pezzo.slice(0, lung)));
+        h.appendChild(document.createTextNode(pezzo.slice(lung)));
+      } else h.appendChild(document.createTextNode(pezzo));
+    });
+    return h;
+  }
+
+  function scheda(p, token) {
+    var box = el('article', 'persona');
+    box.setAttribute('role', 'listitem');
+    box.appendChild(nomeEvidenziato(p.nome, token));
+
+    var rr = el('div', 'ruoli');
+    ruoli(p).forEach(function (r) {
+      var c = el('span', 'ruolo' + (r.tipo ? ' ' + r.tipo : ''));
+      if (r.f) c.appendChild(el('span', 'ora', r.f.testo));
+      c.appendChild(el('span', null, r.testo));
+      rr.appendChild(c);
+    });
+    if (p.stato) rr.appendChild(el('span', 'ruolo altro', p.stato));
+    box.appendChild(rr);
+
+    var az = el('div', 'azioni');
+    var d = cifre(p.telefono);
+    var ig = handleIg(p.instagram);
+    if (d) {
+      az.appendChild(bottone('tel:+' + d, 'tel', 'tel', 'Chiama', 'Chiama ' + p.nome));
+      az.appendChild(bottone('https://wa.me/' + d, '', 'wa', 'WhatsApp', 'Scrivi su WhatsApp a ' + p.nome));
+    } else {
+      az.appendChild(manca('Niente telefono'));
+      az.appendChild(manca('Niente WhatsApp'));
+    }
+    if (ig) az.appendChild(bottone('https://instagram.com/' + ig, '', 'ig', 'Instagram', 'Instagram di ' + p.nome));
+    else az.appendChild(manca('Niente Instagram'));
+    box.appendChild(az);
+
+    if (p.telefono || ig) {
+      var det = el('div', 'dettagli');
+      det.appendChild(el('span', 'num', p.telefono || ''));
+      det.appendChild(el('span', 'ig', ig ? '@' + ig : ''));
+      box.appendChild(det);
+    }
+    return box;
+  }
+
+  // ---------- ricerca ----------
+  function cerca(testo) {
+    var q = norm(testo).trim();
+    $('pulisci').hidden = !q;
+    document.querySelectorAll('.fasce-rapide button').forEach(function (b) {
+      b.classList.toggle('attiva', q !== '' && b.dataset.q === q);
+    });
+    $('inizio').hidden = !!q;
+    var out = $('risultati');
+    out.innerHTML = '';
+
+    if (!q) {
+      $('stato').textContent = persone.length + ' persone in scaletta';
+      return;
+    }
+
+    var trovati, token = [];
+    // solo numeri ("15", "15-16"): cerco la fascia che inizia a quell'ora
+    var ora = q.match(/^(\d{1,2})(?:\s*[-–—]\s*\d{0,2})?$/);
+    if (ora) {
+      var h = +ora[1];
+      trovati = persone.filter(function (p) {
+        return ruoli(p).some(function (r) { return r.f && r.f.da === h; });
+      }).sort(function (a, b) { return ordineInFascia(a, h) - ordineInFascia(b, h) || a.nome.localeCompare(b.nome, 'it'); });
+      $('stato').textContent = trovati.length
+        ? 'Fascia ' + h + '–' + (h + 1) + ': ' + trovati.length + (trovati.length === 1 ? ' persona' : ' persone')
+        : 'Nessuno nella fascia ' + h + '–' + (h + 1);
+    } else {
+      // ogni parola scritta deve essere l'inizio di una parola del nome, in qualsiasi ordine
+      token = q.split(/[^a-z0-9']+/).filter(Boolean);
+      trovati = persone.filter(function (p) {
+        var parole = norm(p.nome).split(/[^a-z0-9']+/).filter(Boolean);
+        return token.every(function (t) { return parole.some(function (w) { return w.indexOf(t) === 0; }); });
+      }).sort(function (a, b) {
+        // prima chi ha il nome che inizia come la prima parola cercata
+        var pa = norm(a.nome).indexOf(token[0]) === 0 ? 0 : 1;
+        var pb = norm(b.nome).indexOf(token[0]) === 0 ? 0 : 1;
+        return pa - pb || a.nome.localeCompare(b.nome, 'it');
+      });
+      $('stato').textContent = trovati.length
+        ? trovati.length + (trovati.length === 1 ? ' risultato' : ' risultati')
+        : 'Nessuno in scaletta con questo nome';
+    }
+
+    trovati.slice(0, MAX_RISULTATI).forEach(function (p) { out.appendChild(scheda(p, token)); });
+    if (trovati.length > MAX_RISULTATI) {
+      out.appendChild(el('div', 'vuoto', 'Altri ' + (trovati.length - MAX_RISULTATI) + ': scrivi qualche lettera in più.'));
+    }
+  }
+
+  function preparaFasce() {
+    var ore = {};
+    persone.forEach(function (p) { ruoli(p).forEach(function (r) { if (r.f) ore[r.f.da] = r.f.testo; }); });
+    var box = $('fasce-rapide');
+    box.innerHTML = '';
+    Object.keys(ore).map(Number).sort(function (a, b) { return a - b; }).forEach(function (h) {
+      var b = el('button', null, h + '–' + (h + 1));
+      b.type = 'button';
+      b.dataset.q = String(h);
+      b.addEventListener('click', function () { $('q').value = String(h); cerca(String(h)); window.scrollTo(0, 0); });
+      box.appendChild(b);
+    });
+    $('inizio').hidden = !box.children.length;
+  }
+
+  // ---------- API ----------
+  function chiama(c) {
+    return fetch(API, {
+      method: 'POST',
+      // text/plain evita il preflight CORS, che Apps Script non gestisce
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ fn: 'getElencoMC', args: [c] })
+    })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) {
+        if (j.errore) { var e = new Error(j.errore); e.server = true; throw e; }
+        if (!Array.isArray(j.risultato)) throw new Error('Risposta inattesa');
+        return j.risultato;
+      });
+  }
+
+  function mostraAccesso(msg) {
+    $('carico').hidden = true;
+    $('rubrica').hidden = true;
+    $('accesso').hidden = false;
+    $('esci').hidden = $('aggiorna').hidden = true;
+    $('errore').textContent = msg || '';
+    $('entra').disabled = false;
+    $('codice').focus();
+  }
+
+  function entra(c, silenzioso) {
+    codice = c;
+    if (!silenzioso) { $('entra').disabled = true; $('errore').textContent = ''; }
+    return chiama(c).then(function (lista) {
+      persone = lista.filter(function (p) { return p && String(p.nome || '').trim(); });
+      scaricatoIl = Date.now();
+      salva(c);
+      $('avviso').innerHTML = '';
+      $('carico').hidden = true;
+      $('accesso').hidden = true;
+      $('rubrica').hidden = false;
+      $('esci').hidden = $('aggiorna').hidden = false;
+      preparaFasce();
+      cerca($('q').value);
+      if (!silenzioso) $('q').focus();
+    }).catch(function (e) {
+      // codice sbagliato o bloccato: torno all'accesso
+      if (e.server && /codice|tentativi|configurato/i.test(e.message)) {
+        if (/non valido/i.test(e.message)) dimentica();
+        mostraAccesso(e.message);
+        return;
+      }
+      // rete: se ho già un elenco lo tengo e avviso
+      if (persone.length) {
+        var b = el('div', 'banner', 'Non riesco ad aggiornare l\'elenco (' + e.message + '). Vedi i dati di prima.');
+        var r = el('button', null, 'Riprova');
+        r.type = 'button';
+        r.addEventListener('click', function () { entra(codice, true); });
+        b.appendChild(r);
+        $('avviso').innerHTML = '';
+        $('avviso').appendChild(b);
+      } else {
+        mostraAccesso('Connessione non riuscita (' + e.message + '). Riprova.');
+      }
+    });
+  }
+
+  // ---------- eventi ----------
+  $('form-codice').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var c = $('codice').value.trim();
+    if (c) entra(c, false);
+  });
+  $('q').addEventListener('input', function () { cerca(this.value); });
+  $('pulisci').addEventListener('click', function () { $('q').value = ''; cerca(''); $('q').focus(); });
+  $('aggiorna').addEventListener('click', function () { entra(codice, true); });
+  $('esci').addEventListener('click', function () {
+    dimentica(); persone = []; codice = ''; $('q').value = ''; $('codice').value = '';
+    mostraAccesso('');
+  });
+  // "/" porta alla ricerca (da computer)
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === '/' && document.activeElement !== $('q') && !$('rubrica').hidden) { ev.preventDefault(); $('q').focus(); }
+  });
+  // la scaletta cambia durante la giornata: tornando sulla pagina riscarico se è vecchia di 2 minuti
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && codice && persone.length && Date.now() - scaricatoIl > 120000) entra(codice, true);
+  });
+
+  // ---------- avvio ----------
+  // Link da mandare agli MC: mc.html#codice=XXXX (il # non arriva a nessun server).
+  // Lo salvo e lo tolgo dalla barra, così non resta negli screenshot.
+  var m = location.hash.match(/codice=([^&]+)/);
+  var daLink = m ? decodeURIComponent(m[1]) : '';
+  if (daLink) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+
+  var iniziale = daLink || leggi();
+  if (iniziale) entra(iniziale, true);
+  else mostraAccesso('');
+})();
+</script>
+</body>
+</html>
