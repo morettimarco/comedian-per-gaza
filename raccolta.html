@@ -36,6 +36,9 @@
     max-width: 1920px; width: 100%; margin: 0 auto;
   }
   .logo { grid-column: 2; display: block; height: clamp(110px, 21vh, 260px); width: auto; }
+  /* Il timer è nascosto: si mostra solo con ?timer=1 nell'indirizzo. */
+  .timer { display: none; }
+  .con-timer .timer { display: block; }
   .timer {
     grid-column: 3; justify-self: end; text-align: right;
     border: var(--bordo) solid var(--nero); border-radius: var(--r); overflow: hidden;
@@ -229,6 +232,10 @@
   "use strict";
 
   // ---------- timer: tempo trascorso dall'inizio (domenica 22/11/2026, 11:00 ora di Milano = 10:00 UTC) ----------
+  // Visibile solo con ?timer=1 nell'indirizzo, es. raccolta.html?timer=1
+  var conTimer = false;
+  try { conTimer = new URLSearchParams(location.search).get("timer") === "1"; } catch (e) {}
+  if (conTimer) document.documentElement.classList.add("con-timer");
   var INIZIO = Date.UTC(2026, 10, 22, 10, 0, 0);
   var timer = document.getElementById("timer");
   var et = document.getElementById("timerEtichetta");
@@ -242,8 +249,7 @@
     timer.classList.toggle("prima", prima);
     et.textContent = prima ? "Si parte alle 11:00 tra" : "In scena dalle 11:00";
   }
-  tick();
-  setInterval(tick, 250);
+  if (conTimer) { tick(); setInterval(tick, 250); }
 
   // ---------- widget GoFundMe ----------
   var REFRESH_MS = 2 * 60 * 1000;   // ricarica il widget ogni 2 minuti
