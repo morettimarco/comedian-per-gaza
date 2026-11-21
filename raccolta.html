@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comedian per Gaza 2026 — Raccolta fondi</title>
+<meta name="description" content="Raccolta fondi di Comedian per Gaza 2026 per la Fondazione Soleterre: dona su GoFundMe.">
+<style>
+  :root {
+    --rosso: #E41B1F;
+    --verde: #159246;
+    --verde-ui: #138741;
+    --nero: #171616;
+    --panna: #F2F2F1;
+    --bianco: #FFFFFF;
+    --grigio: #6E6864;
+    --r: 18px;
+    --bordo: clamp(3px, .35vw, 6px);
+    --font: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bianco); color: var(--nero);
+    font: 16px/1.4 var(--font); -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+  body.idle, body.idle * { cursor: none !important; }
+
+  /* palco: pensato per proiettore 16:9, si adatta al telefono */
+  .pagina { min-height: 100vh; display: flex; flex-direction: column; }
+  .stage {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: clamp(20px, 3.2vw, 64px);
+    align-items: center;
+    padding: clamp(16px, 3vh, 44px) clamp(18px, 4vw, 72px) clamp(10px, 1.6vh, 24px);
+    max-width: 1920px; width: 100%; margin: 0 auto;
+  }
+
+  .top { display: flex; align-items: center; gap: clamp(14px, 2vw, 36px); }
+  .logo { width: clamp(70px, 15vh, 170px); height: auto; flex: none; }
+  .titolo {
+    margin: 0 0 clamp(8px, 1.2vh, 16px);
+    font-size: clamp(20px, 2.6vw, 52px); line-height: 1.05; font-weight: 800;
+    text-transform: uppercase; letter-spacing: -.01em;
+  }
+  .claim {
+    display: inline-block; background: var(--verde); color: var(--bianco);
+    border-radius: var(--r); padding: .38em .7em;
+    font-size: clamp(15px, 1.7vw, 34px); line-height: 1.1; font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  /* riquadro del widget GoFundMe */
+  .widget-card {
+    margin-top: clamp(14px, 2.6vh, 40px);
+    border: var(--bordo) solid var(--nero); border-radius: var(--r);
+    background: var(--bianco); overflow: hidden;
+  }
+  .widget-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--nero); color: var(--bianco);
+    padding: .55em .9em;
+    font-size: clamp(14px, 1.25vw, 26px); font-weight: 800; text-transform: uppercase;
+  }
+  .live { display: inline-flex; align-items: center; gap: .45em; font-size: .78em; letter-spacing: .04em; }
+  .live::before {
+    content: ""; width: .7em; height: .7em; border-radius: 50%; background: var(--rosso);
+    animation: pulsa 1.6s ease-in-out infinite;
+  }
+  @keyframes pulsa { 50% { opacity: .25; } }
+  .widget-body {
+    padding: clamp(12px, 1.6vw, 28px);
+    display: flex; justify-content: center;
+    overflow: hidden;
+  }
+  /* Il widget "medium" di GoFundMe è largo circa 480px: lo ingrandiamo con zoom
+     perché sia leggibile dal fondo della sala (vedi adatta() nello script). */
+  .gfm-scala { flex: none; position: relative; }
+  .gfm-embed { width: 480px; position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+  .gfm-embed iframe { display: block; border: 0; }
+
+  .fallback {
+    display: none; width: 100%; text-align: center; padding: 10px 6px;
+    font-size: clamp(16px, 1.5vw, 28px); font-weight: 700;
+  }
+  .fallback a { color: var(--verde-ui); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+  .widget-card.ko .gfm-scala { display: none; }
+  .widget-card.ko .fallback { display: block; }
+
+  .dest {
+    margin-top: clamp(14px, 2.4vh, 32px);
+    display: flex; align-items: stretch;
+    border: var(--bordo) solid var(--nero); border-radius: var(--r); overflow: hidden;
+  }
+  .dest-testo {
+    flex: 1; background: var(--rosso); color: var(--bianco);
+    padding: .7em 1em; display: flex; align-items: center;
+    font-size: clamp(15px, 1.3vw, 27px); line-height: 1.22; font-weight: 700;
+  }
+  .dest-testo b { font-weight: 800; text-transform: uppercase; }
+  .dest-logo {
+    flex: 0 0 44%; background: var(--bianco);
+    display: flex; align-items: center; justify-content: center;
+    padding: clamp(10px, 1.3vw, 24px) clamp(12px, 1.6vw, 30px);
+  }
+  .dest-logo img { display: block; width: 100%; height: auto; }
+
+  /* striscia partner e patrocinio */
+  .partner {
+    border-top: var(--bordo) solid var(--nero);
+    padding: clamp(8px, 1.4vh, 18px) clamp(18px, 4vw, 72px);
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(18px, 3.2vw, 64px); flex-wrap: wrap;
+  }
+  .partner .etichetta {
+    font-size: clamp(11px, .8vw, 16px); font-weight: 800; color: var(--grigio);
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .partner img { display: block; height: clamp(36px, 6.4vh, 76px); width: auto; }
+  .partner img.largo { height: clamp(40px, 7.4vh, 88px); }
+
+  /* QR */
+  .qr-col { display: flex; flex-direction: column; align-items: stretch; text-align: center; }
+  .dona {
+    background: var(--nero); color: var(--bianco);
+    border-radius: var(--r) var(--r) 0 0; padding: .45em .5em;
+    font-size: clamp(22px, 2.9vw, 60px); line-height: 1; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .01em;
+  }
+  .qrbox {
+    background: var(--bianco);
+    border: var(--bordo) solid var(--nero); border-top: 0;
+    border-radius: 0 0 var(--r) var(--r);
+    padding: 5%;
+  }
+  .qrbox img { display: block; width: 100%; max-width: 46vh; height: auto; margin: 0 auto; }
+  .inquadra {
+    margin-top: clamp(10px, 1.8vh, 22px);
+    font-size: clamp(16px, 1.5vw, 30px); font-weight: 800; text-transform: uppercase;
+  }
+  .url {
+    display: inline-block; margin-top: 4px;
+    font-size: clamp(13px, 1.05vw, 20px); font-weight: 600; color: var(--verde-ui);
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px;
+    word-break: break-all;
+  }
+
+  /* telefono / finestre strette */
+  @media (max-width: 860px), (max-aspect-ratio: 1/1) {
+    .stage { grid-template-columns: minmax(0, 1fr); align-items: start; align-content: start; flex: none; }
+    .logo { width: clamp(78px, 22vw, 130px); }
+    .titolo { font-size: clamp(22px, 6vw, 40px); }
+    .claim { font-size: clamp(15px, 4vw, 26px); }
+    .widget-head { font-size: 15px; }
+    .dest { flex-direction: column; }
+    .dest-testo { font-size: clamp(15px, 4vw, 22px); }
+    .dest-logo { flex-basis: auto; padding: 16px 22%; }
+    .partner img { height: 44px; }
+    .partner img.largo { height: 52px; }
+    .qr-col { max-width: 460px; width: 100%; margin: 0 auto; }
+    .dona { font-size: clamp(24px, 7vw, 44px); }
+    .inquadra { font-size: clamp(16px, 4.4vw, 24px); }
+    .url { font-size: 15px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .live::before { animation: none; } }
+</style>
+</head>
+<body>
+
+<div class="pagina">
+<main class="stage">
+  <section>
+    <div class="top">
+      <img class="logo" alt="Comedian per Gaza" src="logo.png">
+      <div>
+        <h1 class="titolo">Comedian per Gaza 2026</h1>
+        <div class="claim">12 ore di stand up per Gaza</div>
+      </div>
+    </div>
+
+    <div class="widget-card" id="widgetCard">
+      <div class="widget-head">
+        <span>La raccolta</span>
+        <span class="live">in diretta da GoFundMe</span>
+      </div>
+      <div class="widget-body">
+        <!-- WIDGET GOFUNDME: se il codice copiato da "Condividi > Incorpora" è diverso,
+             sostituisci il div qui sotto e lo script in fondo alla pagina con quello. -->
+        <div class="gfm-scala" id="gfmScala">
+          <div class="gfm-embed" data-url="https://www.gofundme.com/f/comedian-per-gaza-2026/widget/medium/"></div>
+        </div>
+        <div class="fallback">
+          La raccolta è su
+          <a href="https://www.gofundme.com/f/comedian-per-gaza-2026" target="_blank" rel="noopener noreferrer">GoFundMe</a>:
+          inquadra il QR per donare.
+        </div>
+      </div>
+    </div>
+
+    <div class="dest">
+      <div class="dest-testo">
+        <span>Tutto il ricavato va alla <b>Fondazione Soleterre ETS</b> per i bambini
+        e le famiglie dell'ospedale Nasser di Khan Younis, a Gaza.</span>
+      </div>
+      <div class="dest-logo"><img src="loghi/soleterre.png" alt="Fondazione Soleterre"></div>
+    </div>
+  </section>
+
+  <aside class="qr-col">
+    <div class="dona">Dona ora</div>
+    <div class="qrbox"><img src="qr-gofundme.png" width="1000" height="1000" alt="QR code per donare su GoFundMe a Comedian per Gaza 2026"></div>
+    <div class="inquadra">Inquadra il QR con il telefono</div>
+    <a class="url" href="https://www.gofundme.com/f/comedian-per-gaza-2026" target="_blank" rel="noopener noreferrer">gofundme.com/f/comedian-per-gaza-2026</a>
+  </aside>
+</main>
+
+<footer class="partner" aria-label="Partner e patrocinio">
+  <span class="etichetta">Con</span>
+  <img src="loghi/ciq.png" alt="C.I.Q. Centro Internazionale di Quartiere">
+  <img src="loghi/pasta-cerati.png" alt="Pasta Cerati">
+  <img src="loghi/hemp-club.png" alt="The Hemp Club, associazione culturale">
+  <img class="largo" src="loghi/patrocinio-municipio4.png" alt="Patrocinio del Municipio 4, Comune di Milano">
+</footer>
+</div>
+
+<script defer src="https://www.gofundme.com/static/js/embed.js"></script>
+<script>
+(function () {
+  "use strict";
+  var REFRESH_MS = 2 * 60 * 1000;   // ricarica il widget ogni 2 minuti
+  var card = document.getElementById("widgetCard");
+  var box = card.querySelector(".gfm-embed");
+
+  function frame() { return box.querySelector("iframe"); }
+
+  var BASE = 480;
+  function adatta() {
+    var scala = document.getElementById("gfmScala");
+    var body = scala.parentElement, cs = getComputedStyle(body);
+    var avail = body.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    var z = Math.min(2.4, avail / BASE);
+    // Su schermi orizzontali (proiettore) limita anche in altezza: tutto deve stare in una schermata.
+    if (window.innerWidth > 860 && window.innerWidth / window.innerHeight > 1) {
+      z = Math.min(z, (window.innerHeight * 0.28) / 174);
+    }
+    z = Math.max(0.6, z);
+    // Ingrandiamo con transform (più affidabile di zoom con gli iframe di altri siti)
+    // e diamo al contenitore la misura finale, così il layout resta giusto.
+    var h = box.offsetHeight || 174;
+    box.style.transform = "scale(" + z.toFixed(3) + ")";
+    scala.style.width = Math.round(BASE * z) + "px";
+    scala.style.height = Math.round(h * z) + "px";
+  }
+  adatta();
+  window.addEventListener("resize", adatta);
+  if (window.ResizeObserver) new ResizeObserver(adatta).observe(box);
+
+  // Se dopo 12 secondi il widget non è comparso, mostra il link di riserva.
+  setTimeout(function () { if (!frame()) card.classList.add("ko"); }, 12000);
+
+  // Sullo schermo dell'evento la pagina resta aperta ore: ricarichiamo solo il widget,
+  // così la cifra resta aggiornata senza far lampeggiare tutta la pagina.
+  setInterval(function () {
+    var f = frame();
+    if (!f || !f.src) return;
+    try {
+      var u = new URL(f.src);
+      u.searchParams.set("_r", Date.now().toString(36));
+      f.src = u.toString();
+    } catch (e) { f.src = f.src; }
+  }, REFRESH_MS);
+
+  // Proiettore: nascondi il cursore dopo 3 secondi di inattività.
+  var t = null;
+  function wake() {
+    document.body.classList.remove("idle");
+    clearTimeout(t);
+    t = setTimeout(function () { document.body.classList.add("idle"); }, 3000);
+  }
+  ["mousemove", "touchstart", "keydown"].forEach(function (ev) {
+    document.addEventListener(ev, wake, { passive: true });
+  });
+  wake();
+})();
+</script>
+</body>
+</html>
