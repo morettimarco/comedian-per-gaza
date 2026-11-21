@@ -27,39 +27,50 @@
   }
   body.idle, body.idle * { cursor: none !important; }
 
-  /* palco: pensato per proiettore 16:9, si adatta al telefono */
   .pagina { min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ---------- testata: logo grande al centro, timer a destra ---------- */
+  .testata {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: clamp(10px, 2vh, 28px) clamp(18px, 4vw, 72px) 0;
+    max-width: 1920px; width: 100%; margin: 0 auto;
+  }
+  .logo { grid-column: 2; display: block; height: clamp(110px, 21vh, 260px); width: auto; }
+  .timer {
+    grid-column: 3; justify-self: end; text-align: right;
+    border: var(--bordo) solid var(--nero); border-radius: var(--r); overflow: hidden;
+    background: var(--bianco);
+  }
+  .timer .etichetta {
+    display: block; background: var(--verde); color: var(--bianco);
+    padding: .35em .8em; font-size: clamp(12px, 1.05vw, 22px); font-weight: 800;
+    text-transform: uppercase; letter-spacing: .06em; text-align: center;
+  }
+  .timer.prima .etichetta { background: var(--rosso); }
+  .timer .tempo {
+    display: block; padding: .12em .45em .16em;
+    font-size: clamp(30px, 4.2vw, 84px); line-height: 1; font-weight: 800;
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em; text-align: center;
+  }
+
+  /* ---------- palco: widget + Soleterre a sinistra, QR a destra, stessa altezza ---------- */
   .stage {
     flex: 1;
     display: grid;
     grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
     gap: clamp(20px, 3.2vw, 64px);
-    align-items: center;
-    padding: clamp(16px, 3vh, 44px) clamp(18px, 4vw, 72px) clamp(10px, 1.6vh, 24px);
+    align-items: stretch;
+    padding: clamp(12px, 2.2vh, 32px) clamp(18px, 4vw, 72px) clamp(12px, 2vh, 28px);
     max-width: 1920px; width: 100%; margin: 0 auto;
   }
+  .sinistra { display: flex; flex-direction: column; gap: clamp(12px, 2.2vh, 30px); }
 
-  .top { display: flex; align-items: center; gap: clamp(14px, 2vw, 36px); }
-  .logo { width: clamp(70px, 15vh, 170px); height: auto; flex: none; }
-  .titolo {
-    margin: 0 0 clamp(8px, 1.2vh, 16px);
-    font-size: clamp(20px, 2.6vw, 52px); line-height: 1.05; font-weight: 800;
-    text-transform: uppercase; letter-spacing: -.01em;
-  }
-  .claim {
-    display: inline-block; background: var(--verde); color: var(--bianco);
-    border-radius: var(--r); padding: .38em .7em;
-    font-size: clamp(15px, 1.7vw, 34px); line-height: 1.1; font-weight: 800;
-    text-transform: uppercase;
-  }
-
-  /* riquadro del widget GoFundMe */
   .widget-card {
-    margin-top: clamp(14px, 2.6vh, 40px);
+    flex: 1; display: flex; flex-direction: column;
     border: var(--bordo) solid var(--nero); border-radius: var(--r);
     background: var(--bianco); overflow: hidden;
   }
-  .widget-head {
+  .card-head {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
     background: var(--nero); color: var(--bianco);
     padding: .55em .9em;
@@ -72,16 +83,12 @@
   }
   @keyframes pulsa { 50% { opacity: .25; } }
   .widget-body {
-    padding: clamp(12px, 1.6vw, 28px);
-    display: flex; justify-content: center;
-    overflow: hidden;
+    flex: 1; padding: clamp(10px, 1.4vw, 24px);
+    display: flex; justify-content: center; align-items: center; overflow: hidden;
   }
-  /* Il widget "medium" di GoFundMe è largo circa 480px: lo ingrandiamo con zoom
-     perché sia leggibile dal fondo della sala (vedi adatta() nello script). */
   .gfm-scala { flex: none; position: relative; }
   .gfm-embed { width: 480px; position: absolute; top: 0; left: 0; transform-origin: 0 0; }
   .gfm-embed iframe { display: block; border: 0; }
-
   .fallback {
     display: none; width: 100%; text-align: center; padding: 10px 6px;
     font-size: clamp(16px, 1.5vw, 28px); font-weight: 700;
@@ -91,7 +98,6 @@
   .widget-card.ko .fallback { display: block; }
 
   .dest {
-    margin-top: clamp(14px, 2.4vh, 32px);
     display: flex; align-items: stretch;
     border: var(--bordo) solid var(--nero); border-radius: var(--r); overflow: hidden;
   }
@@ -108,6 +114,24 @@
   }
   .dest-logo img { display: block; width: 100%; height: auto; }
 
+  /* QR: occupa tutta l'altezza della colonna di sinistra */
+  .qr-col {
+    display: flex; flex-direction: column; color: inherit; text-decoration: none;
+    border: var(--bordo) solid var(--nero); border-radius: var(--r); overflow: hidden;
+    background: var(--bianco);
+  }
+  .dona {
+    background: var(--nero); color: var(--bianco); text-align: center;
+    padding: .4em .5em;
+    font-size: clamp(22px, 2.9vw, 60px); line-height: 1; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .01em;
+  }
+  .qrbox { flex: 1 1 0; min-height: 0; position: relative; }
+  .qrbox img {
+    position: absolute; inset: 4%; width: 92%; height: 92%;
+    object-fit: contain; display: block;
+  }
+
   /* striscia partner e patrocinio */
   .partner {
     border-top: var(--bordo) solid var(--nero);
@@ -122,73 +146,47 @@
   .partner img { display: block; height: clamp(36px, 6.4vh, 76px); width: auto; }
   .partner img.largo { height: clamp(40px, 7.4vh, 88px); }
 
-  /* QR */
-  .qr-col { display: flex; flex-direction: column; align-items: stretch; text-align: center; }
-  .dona {
-    background: var(--nero); color: var(--bianco);
-    border-radius: var(--r) var(--r) 0 0; padding: .45em .5em;
-    font-size: clamp(22px, 2.9vw, 60px); line-height: 1; font-weight: 800;
-    text-transform: uppercase; letter-spacing: .01em;
-  }
-  .qrbox {
-    background: var(--bianco);
-    border: var(--bordo) solid var(--nero); border-top: 0;
-    border-radius: 0 0 var(--r) var(--r);
-    padding: 5%;
-  }
-  .qrbox img { display: block; width: 100%; max-width: 46vh; height: auto; margin: 0 auto; }
-  .inquadra {
-    margin-top: clamp(10px, 1.8vh, 22px);
-    font-size: clamp(16px, 1.5vw, 30px); font-weight: 800; text-transform: uppercase;
-  }
-  .url {
-    display: inline-block; margin-top: 4px;
-    font-size: clamp(13px, 1.05vw, 20px); font-weight: 600; color: var(--verde-ui);
-    text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px;
-    word-break: break-all;
-  }
-
-  /* telefono / finestre strette */
+  /* ---------- telefono / finestre strette ---------- */
   @media (max-width: 860px), (max-aspect-ratio: 1/1) {
-    .stage { grid-template-columns: minmax(0, 1fr); align-items: start; align-content: start; flex: none; }
-    .logo { width: clamp(78px, 22vw, 130px); }
-    .titolo { font-size: clamp(22px, 6vw, 40px); }
-    .claim { font-size: clamp(15px, 4vw, 26px); }
-    .widget-head { font-size: 15px; }
+    .testata { grid-template-columns: 1fr; justify-items: center; gap: 14px; padding-top: 18px; }
+    .logo { grid-column: 1; height: clamp(120px, 34vw, 200px); }
+    .timer { grid-column: 1; justify-self: center; }
+    .timer .tempo { font-size: clamp(34px, 11vw, 60px); }
+    .timer .etichetta { font-size: 13px; }
+    .stage { grid-template-columns: minmax(0, 1fr); flex: none; }
+    .card-head { font-size: 15px; }
     .dest { flex-direction: column; }
     .dest-testo { font-size: clamp(15px, 4vw, 22px); }
     .dest-logo { flex-basis: auto; padding: 16px 22%; }
-    .partner img { height: 44px; }
-    .partner img.largo { height: 52px; }
     .qr-col { max-width: 460px; width: 100%; margin: 0 auto; }
     .dona { font-size: clamp(24px, 7vw, 44px); }
-    .inquadra { font-size: clamp(16px, 4.4vw, 24px); }
-    .url { font-size: 15px; }
+    .qrbox { flex: none; aspect-ratio: 1 / 1; }
+    .partner img { height: 44px; }
+    .partner img.largo { height: 52px; }
   }
   @media (prefers-reduced-motion: reduce) { .live::before { animation: none; } }
 </style>
 </head>
 <body>
-
 <div class="pagina">
-<main class="stage">
-  <section>
-    <div class="top">
-      <img class="logo" alt="Comedian per Gaza" src="logo.png">
-      <div>
-        <h1 class="titolo">Comedian per Gaza 2026</h1>
-        <div class="claim">12 ore di stand up per Gaza</div>
-      </div>
-    </div>
 
+<header class="testata">
+  <img class="logo" src="logo.png" alt="Comedian per Gaza">
+  <div class="timer" id="timer" aria-live="off">
+    <span class="etichetta" id="timerEtichetta">In scena dalle 11:00</span>
+    <span class="tempo" id="timerTempo">00:00:00</span>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="sinistra">
     <div class="widget-card" id="widgetCard">
-      <div class="widget-head">
+      <div class="card-head">
         <span>La raccolta</span>
         <span class="live">in diretta da GoFundMe</span>
       </div>
       <div class="widget-body">
-        <!-- WIDGET GOFUNDME: se il codice copiato da "Condividi > Incorpora" è diverso,
-             sostituisci il div qui sotto e lo script in fondo alla pagina con quello. -->
+        <!-- WIDGET GOFUNDME (Condividi > Incorpora). Se cambia, sostituisci il div e lo script in fondo. -->
         <div class="gfm-scala" id="gfmScala">
           <div class="gfm-embed" data-url="https://www.gofundme.com/f/comedian-per-gaza-2026/widget/medium/"></div>
         </div>
@@ -209,12 +207,11 @@
     </div>
   </section>
 
-  <aside class="qr-col">
+  <a class="qr-col" href="https://www.gofundme.com/f/comedian-per-gaza-2026" target="_blank" rel="noopener noreferrer"
+     aria-label="Dona su GoFundMe: inquadra il QR o tocca qui">
     <div class="dona">Dona ora</div>
     <div class="qrbox"><img src="qr-gofundme.png" width="1000" height="1000" alt="QR code per donare su GoFundMe a Comedian per Gaza 2026"></div>
-    <div class="inquadra">Inquadra il QR con il telefono</div>
-    <a class="url" href="https://www.gofundme.com/f/comedian-per-gaza-2026" target="_blank" rel="noopener noreferrer">gofundme.com/f/comedian-per-gaza-2026</a>
-  </aside>
+  </a>
 </main>
 
 <footer class="partner" aria-label="Partner e patrocinio">
@@ -230,25 +227,42 @@
 <script>
 (function () {
   "use strict";
+
+  // ---------- timer: tempo trascorso dall'inizio (domenica 22/11/2026, 11:00 ora di Milano = 10:00 UTC) ----------
+  var INIZIO = Date.UTC(2026, 10, 22, 10, 0, 0);
+  var timer = document.getElementById("timer");
+  var et = document.getElementById("timerEtichetta");
+  var tempo = document.getElementById("timerTempo");
+  function due(n) { return (n < 10 ? "0" : "") + n; }
+  function tick() {
+    var diff = Math.floor((Date.now() - INIZIO) / 1000);
+    var prima = diff < 0, s = Math.abs(diff);
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    tempo.textContent = due(h) + ":" + due(m) + ":" + due(sec);
+    timer.classList.toggle("prima", prima);
+    et.textContent = prima ? "Si parte alle 11:00 tra" : "In scena dalle 11:00";
+  }
+  tick();
+  setInterval(tick, 250);
+
+  // ---------- widget GoFundMe ----------
   var REFRESH_MS = 2 * 60 * 1000;   // ricarica il widget ogni 2 minuti
   var card = document.getElementById("widgetCard");
   var box = card.querySelector(".gfm-embed");
-
+  var scala = document.getElementById("gfmScala");
   function frame() { return box.querySelector("iframe"); }
 
+  // Il widget "medium" è largo 480px: lo ingrandiamo con transform (più affidabile
+  // di zoom con gli iframe di altri siti) e diamo al contenitore la misura finale.
   var BASE = 480;
   function adatta() {
-    var scala = document.getElementById("gfmScala");
     var body = scala.parentElement, cs = getComputedStyle(body);
     var avail = body.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     var z = Math.min(2.4, avail / BASE);
-    // Su schermi orizzontali (proiettore) limita anche in altezza: tutto deve stare in una schermata.
     if (window.innerWidth > 860 && window.innerWidth / window.innerHeight > 1) {
-      z = Math.min(z, (window.innerHeight * 0.28) / 174);
+      z = Math.min(z, (window.innerHeight * 0.31) / 174);   // tutto in una schermata sul proiettore
     }
     z = Math.max(0.6, z);
-    // Ingrandiamo con transform (più affidabile di zoom con gli iframe di altri siti)
-    // e diamo al contenitore la misura finale, così il layout resta giusto.
     var h = box.offsetHeight || 174;
     box.style.transform = "scale(" + z.toFixed(3) + ")";
     scala.style.width = Math.round(BASE * z) + "px";
@@ -261,8 +275,7 @@
   // Se dopo 12 secondi il widget non è comparso, mostra il link di riserva.
   setTimeout(function () { if (!frame()) card.classList.add("ko"); }, 12000);
 
-  // Sullo schermo dell'evento la pagina resta aperta ore: ricarichiamo solo il widget,
-  // così la cifra resta aggiornata senza far lampeggiare tutta la pagina.
+  // Sullo schermo dell'evento la pagina resta aperta ore: ricarichiamo solo il widget.
   setInterval(function () {
     var f = frame();
     if (!f || !f.src) return;
