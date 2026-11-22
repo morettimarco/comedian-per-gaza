@@ -168,6 +168,40 @@
     .partner img.largo { height: 52px; }
   }
   @media (prefers-reduced-motion: reduce) { .live::before { animation: none; } }
+
+  /* ---------- ?blacksquare=1: metà sinistra spenta (nera), a destra una colonna verticale
+     con logo, QR e loghi dei partner, tutti larghi quanto il QR ---------- */
+  .black-square body { background: var(--nero); }
+  .black-square .pagina { flex-direction: row; height: 100vh; min-height: 0; }
+  .black-square .spento { flex: 1 1 50%; background: var(--nero); }
+  .black-square .colonna {
+    --w: min(40vw, 50vh);
+    flex: 1 1 50%; background: var(--bianco);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(10px, 2.4vh, 32px); padding: clamp(10px, 2.5vh, 32px) 0; overflow: hidden;
+  }
+  .black-square .colonna .testata {
+    display: flex; align-items: center; justify-content: center; gap: clamp(10px, 1.4vw, 24px);
+    width: var(--w); max-width: none; margin: 0; padding: 0;
+  }
+  .black-square .colonna .logo { height: clamp(90px, 17vh, 220px); }
+  .black-square .colonna .timer .tempo { font-size: clamp(22px, 3.6vh, 54px); }
+  .black-square .colonna .timer .etichetta { font-size: clamp(10px, 1.3vh, 18px); }
+  .black-square .colonna .qr-col { width: var(--w); flex: none; }
+  .black-square .colonna .dona { font-size: clamp(22px, 5.2vh, 64px); }
+  .black-square .colonna .qrbox { flex: none; aspect-ratio: 1 / 1; }
+  .black-square .colonna .partner {
+    width: var(--w); border-top: 0; padding: 0;
+    gap: clamp(8px, 1vw, 16px); justify-content: space-between; flex-wrap: nowrap;
+  }
+  .black-square .colonna .partner .etichetta { display: none; }
+  .black-square .colonna .partner img,
+  .black-square .colonna .partner img.largo { height: auto; max-height: 6.5vh; min-width: 0; flex: 0 1 auto; max-width: 30%; object-fit: contain; }
+  @media (max-aspect-ratio: 1/1) {
+    .black-square .pagina { height: auto; min-height: 100vh; }
+    .black-square .spento { display: none; }
+    .black-square .colonna { --w: min(88vw, 460px); }
+  }
 </style>
 </head>
 <body>
@@ -231,6 +265,26 @@
 (function () {
   "use strict";
 
+  // ---------- ?blacksquare=1: metà pagina nera, a destra logo + QR + partner in colonna ----------
+  var blackSquare = false;
+  try {
+    var qs = new URLSearchParams(location.search);
+    blackSquare = ["blacksquare", "black_square", "black-square", "blackSquare"].some(function (k) { return qs.get(k) === "1"; });
+  } catch (e) {}
+  if (blackSquare) {
+    document.documentElement.classList.add("black-square");
+    var pagina = document.querySelector(".pagina");
+    var spento = document.createElement("div"); spento.className = "spento"; spento.setAttribute("aria-hidden", "true");
+    var colonna = document.createElement("div"); colonna.className = "colonna";
+    colonna.appendChild(document.querySelector(".testata"));
+    colonna.appendChild(document.querySelector(".qr-col"));
+    colonna.appendChild(document.querySelector(".partner"));
+    var stage = document.querySelector(".stage");
+    stage.parentNode.removeChild(stage);            // via widget e riquadro Soleterre
+    pagina.appendChild(spento);
+    pagina.appendChild(colonna);
+  }
+
   // ---------- timer: tempo trascorso dall'inizio (domenica 22/11/2026, 11:00 ora di Milano = 10:00 UTC) ----------
   // Visibile solo con ?timer=1 nell'indirizzo, es. raccolta.html?timer=1
   var conTimer = false;
@@ -254,6 +308,9 @@
   // ---------- widget GoFundMe ----------
   var REFRESH_MS = 2 * 60 * 1000;   // ricarica il widget ogni 2 minuti
   var card = document.getElementById("widgetCard");
+  if (card && document.body.contains(card)) avviaWidget();   // con ?blacksquare=1 il widget non c'è
+
+  function avviaWidget() {
   var box = card.querySelector(".gfm-embed");
   var scala = document.getElementById("gfmScala");
   function frame() { return box.querySelector("iframe"); }
@@ -291,6 +348,7 @@
       f.src = u.toString();
     } catch (e) { f.src = f.src; }
   }, REFRESH_MS);
+  }
 
   // Proiettore: nascondi il cursore dopo 3 secondi di inattività.
   var t = null;
