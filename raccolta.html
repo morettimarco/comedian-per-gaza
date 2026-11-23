@@ -36,7 +36,7 @@
     max-width: 1920px; width: 100%; margin: 0 auto;
   }
   .logo { grid-column: 2; display: block; height: clamp(110px, 21vh, 260px); width: auto; }
-  /* Il timer è nascosto: si mostra solo con ?timer=1 nell'indirizzo. */
+  /* Il timer è nascosto: si mostra solo con ?timer=1, ?timer=roma, ?timer=1830 ecc. */
   .timer { display: none; }
   .con-timer .timer { display: block; }
   .timer {
@@ -285,25 +285,85 @@
     pagina.appendChild(colonna);
   }
 
-  // ---------- timer: tempo trascorso dall'inizio (domenica 22/11/2026, 11:00 ora di Milano = 10:00 UTC) ----------
-  // Visibile solo con ?timer=1 nell'indirizzo, es. raccolta.html?timer=1
-  var conTimer = false;
-  try { conTimer = new URLSearchParams(location.search).get("timer") === "1"; } catch (e) {}
-  if (conTimer) document.documentElement.classList.add("con-timer");
-  var INIZIO = Date.UTC(2026, 10, 22, 10, 0, 0);
+  // ---------- timer: tempo trascorso dall'inizio dell'evento ----------
+  // Nascosto di default. Valori di ?timer=
+  //   1            Milano, domenica 22/11/2026 alle 11:00
+  //   roma         il giorno e l'ora della città, presi dal foglio "Città" (colonna Data,
+  //   genova ...   es. "29/11/2026 12:00"); se il foglio non risponde si usa la copia qui sotto
+  //   1830 / 18:30 oggi alle 18:30, per qualsiasi città o serata
+  var CITTA_RISERVA = {            // copia del foglio "Città" al 23/11/2026
+    milano:  "22/11/2026 11:00",
+    bologna: "22/11/2026 16:00",
+    roma:    "29/11/2026 12:00"
+  };
+  var API_CITTA = "https://script.google.com/macros/s/AKfycbzacyh8bspCAGjym4DzgkCaYyFPTpFWOOKExbyXaI0Kg5sE59tonBJ8EBumhs6xfg0v/exec";
+
   var timer = document.getElementById("timer");
   var et = document.getElementById("timerEtichetta");
   var tempo = document.getElementById("timerTempo");
+  var INIZIO = null, ORA_INIZIO = "";
   function due(n) { return (n < 10 ? "0" : "") + n; }
+  function chiave(s) {
+    return String(s || "").trim().toLowerCase()
+      .normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "");
+  }
+  // "29/11/2026 12:00" (o "29/11 12:00") -> Date nell'ora locale del computer del proiettore
+  function daFoglio(s) {
+    var m = String(s || "").match(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\s+(\d{1,2})[:.](\d{2})/);
+    if (!m) return null;
+    var anno = m[3] ? (m[3].length === 2 ? 2000 + +m[3] : +m[3]) : new Date().getFullYear();
+    return new Date(anno, +m[2] - 1, +m[1], +m[4], +m[5], 0);
+  }
+  function imposta(d) {
+    if (!d || isNaN(d)) return false;
+    INIZIO = d.getTime();
+    ORA_INIZIO = due(d.getHours()) + ":" + due(d.getMinutes());
+    document.documentElement.classList.add("con-timer");
+    tick();
+    return true;
+  }
   function tick() {
+    if (INIZIO === null) return;
     var diff = Math.floor((Date.now() - INIZIO) / 1000);
     var prima = diff < 0, s = Math.abs(diff);
     var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
     tempo.textContent = due(h) + ":" + due(m) + ":" + due(sec);
     timer.classList.toggle("prima", prima);
-    et.textContent = prima ? "Si parte alle 11:00 tra" : "In scena dalle 11:00";
+    et.textContent = prima ? "Si parte alle " + ORA_INIZIO + " tra" : "In scena dalle " + ORA_INIZIO;
   }
-  if (conTimer) { tick(); setInterval(tick, 250); }
+
+  var valTimer = null;
+  try { valTimer = new URLSearchParams(location.search).get("timer"); } catch (e) {}
+  if (valTimer) {
+    var v = String(valTimer).trim(), orario = v.match(/^(\d{1,2})[:.h]?(\d{2})$/);
+    if (v === "1") {
+      imposta(daFoglio(CITTA_RISERVA.milano));
+    } else if (orario && +orario[1] < 24 && +orario[2] < 60) {
+      var oggi = new Date();
+      imposta(new Date(oggi.getFullYear(), oggi.getMonth(), oggi.getDate(), +orario[1], +orario[2], 0));
+    } else {
+      var k = chiave(v);
+      imposta(daFoglio(CITTA_RISERVA[k]));       // subito, con la copia locale
+      // poi il dato aggiornato dal foglio "Città" (vale anche per le città non in copia)
+      fetch(API_CITTA, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+                         body: JSON.stringify({ fn: "getCitta", args: [] }) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          var righe = (j && (j.risultato || j.result)) || [];
+          for (var i = 0; i < righe.length; i++) {
+            if (chiave(righe[i].citta) === k) {
+              if (!imposta(daFoglio(righe[i].data)) && INIZIO === null) {
+                console.warn("Timer: nel foglio Città manca l'ora di inizio per " + righe[i].citta);
+              }
+              return;
+            }
+          }
+          if (INIZIO === null) console.warn("Timer: città non trovata nel foglio Città: " + v);
+        })
+        .catch(function (e) { console.warn("Timer: foglio Città non raggiungibile", e); });
+    }
+  }
+  setInterval(tick, 250);
 
   // ---------- widget GoFundMe ----------
   var REFRESH_MS = 2 * 60 * 1000;   // ricarica il widget ogni 2 minuti
